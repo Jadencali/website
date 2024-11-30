@@ -1,0 +1,120 @@
+﻿@model IEnumerable<SabongPinoy.Models.ArenaGame>
+
+@{
+    ViewBag.Title = "Event Fights";
+}
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 ">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-left">
+                            <span><i class="ion ion-ios-people fa-fw"></i>@Request.QueryString["a"] - Event Fights </span>
+                            <div class="pull-right">
+                                <div class="btn-group open">
+                                    <a class=" btn btn-default btn-xs" href="@Url.Action("Arena", "Admin")" title="Go Back"><i class="ion ion-arrow-left-b fa-fw"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="pull-left small col-lg-offset-9">
+                                @using (Html.BeginForm("GenerateFights", "Admin", new { aid = Request.QueryString["aid"] }, FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <div class="form-group input-group form-group-sm">
+                                        <input type="text" name="gameNumber" class="form-control" placeholder="How many fights?">
+                                        <span class="input-group-btn">
+                                            <button type="submit"  class="btn btn-danger btn-sm " title="Generate Fights">
+                                                <i class="ion ion-ios-americanfootball-outline" ></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                }
+
+                            </div>
+                            <table class="table table-responsive table-striped table-hover  text-dark-space text-left small">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th>Fight #</th>
+                                        <th>Open</th>
+                                        @*<th>Prediction</th>*@
+                                        <th>Meron</th>
+                                        <th>Wala</th>
+                                        <th>Winner</th>
+                                        <th>Pending</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @item.GameNumber
+                                            </td>
+
+                                            @if (item.IsOpen)
+                                                {
+                                                    <td class="well-bg-draw">
+                                                        @item.IsOpen
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    <td>
+                                                        @item.IsOpen
+                                                    </td>
+                                                }
+                                           
+                                            @*<td>
+                            @item.Prediction
+                        </td>*@
+                                            <td>
+                                                @item.Meron
+                                            </td>
+                                            <td>
+                                                @item.Wala
+                                            </td>
+                                            <td>
+                                                @item.Result
+                                            </td>
+
+                                            @if (item.ForNextPage.HasValue == false & item.IsOpen == false)
+                                            {
+                                                <td class="well-bg-wala">
+                                                    FOR NEXT PAGE
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    OK
+                                                </td>
+                                            }
+
+
+
+                                            <td class="text-center">
+                                                @Html.ActionLink("Bets", "CurrentBets", "Admin", new { agid = @item.ArenaGameId, aid = @item.ArenaId }, new { @class = "btn btn-primary btn-xs" })
+                                                @Html.ActionLink("Correction", "GameCorrection", "Admin", new { agid = @item.ArenaGameId, aid = @item.ArenaId, r = @item.Result, gn = @item.GameNumber }, new { @class = "btn btn-warning btn-xs" })
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                          
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+

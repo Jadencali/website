@@ -1,0 +1,118 @@
+﻿@model List<SabongPinoy.Models.DArenaPending>
+
+@{
+    ViewBag.Title = "Arena Reports";
+}
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-xs-12  col-sm-12 col-md-12 col-lg-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-left">
+                            <span><i class="ion ion-cash fa-fw"></i>Reports Total Pending: </span>
+                            <div class="pull-right">
+                                <div class="btn-group open">
+                                    <a class=" btn btn-default btn-xs" href="@Url.Action("Arena", "Admin")" title="Go Back"><i class="ion ion-arrow-left-b fa-fw"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="form-wrapper table-responsive">
+                                <h2 class="text-left text-custom-one">
+                                    <span class="text-dark"> Arena: </span>   <strong> @Request.QueryString["a"] </strong>
+                                </h2>
+                                <br />
+
+
+
+                                <div class="col-md-6 col-sm-6 label">
+                                    <div class="label-danger">
+                                        <h4>Total Pending (Bet):</h4>
+                                        <h4>@ViewBag.TotalBet.ToString("###,##0.##")</h4>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-sm-6 label">
+                                    <div class="label-danger">
+                                        <h4>Total Pending (Win):</h4>
+                                        <h4>@ViewBag.TotalPending.ToString("###,##0.##")</h4>
+                                    </div>
+                                </div>
+                                <hr />
+
+                                <div class="clearfix"></div>
+                                <div class="clearfix"></div>
+                                <div class="clearfix"></div>
+                                <div class="clearfix"></div>
+                                <div class="clearfix"></div>
+                                <div class="clearfix"></div>
+                                <table class="table table-striped table-hover text-dark-space text-left small">
+                                    <thead class="text-center">
+                                        <tr>
+                                            <th>Bet Id</th>
+                                            <th>Username</th>
+                                            <th>GameNumber</th>
+                                            <th>Result</th>
+                                            <th>BetOn</th>
+                                            <th>Bet</th>
+                                            <th>Win Amount</th>
+                                            <th>Payout</th>
+                                            <th>DateLoaded</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                        <tr>
+                                            <td>
+                                                @item.UserBetId
+                                            </td>
+                                            <td>
+                                                @item.Username
+                                            </td>
+                                            <td>
+                                                @item.GameNumber
+                                            </td>
+                                            <td>
+                                                @item.Result
+                                            </td>
+                                            <td>
+                                                @item.BetOn
+                                            </td>
+                                            <td>
+                                                @item.Bet.ToString("###,##0.##")
+                                            </td>
+                                            <td >
+                                                @item.Points.ToString("###,##0.##")
+                                            </td>
+                                            <td>
+                                                @{decimal net = 0;}
+                                                @{net = @item.Bet + @item.Points;
+                                                }
+                                                <span class="merontext">
+                                                    @net
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @item.LocalDateTime
+                                            </td>
+                                        </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+

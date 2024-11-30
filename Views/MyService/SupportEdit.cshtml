@@ -1,0 +1,104 @@
+﻿@model SabongPinoy.Models.CustomerSupport
+@{
+    ViewBag.Title = "SupportEdit";
+}
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 ">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-left">
+                            <i class="ion-ios-people"></i> Support Information
+                            <div class="pull-right">
+                                <div class="btn-group open">
+                                    <a class=" btn btn-default btn-xs" href="@Url.Action("CSR", "MyService")" title="Go Back"><i class="ion ion-arrow-left-b fa-fw"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="form-wrapper">
+                                <h3 class="text-left text-custom-one">CSR Update</h3>
+                                <hr />
+                                @using (Html.BeginForm("SupportEdit", "MyService", null, FormMethod.Post, new { @class = "form-horizontal text-left" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.ValidationSummary(true)
+                                    <div class="error-div small">
+                                        <p class="alert-danger"> @ViewBag.Message</p>
+                                    </div>
+                                    @Html.HiddenFor(model => model.SupportId)
+                                    <div class="form-group text-dark-mid">
+                                        @Html.LabelFor(model => model.SupportId, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static">@Html.DisplayFor(model => model.SupportId)</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group text-dark-mid">
+                                        @Html.LabelFor(model => model.Username, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static">@Html.DisplayFor(model => model.Username)</p>
+                                            @Html.HiddenFor(x => x.Username)
+                                        </div>
+                                    </div>
+                                      <div class="form-group text-dark-mid">
+                                        @Html.LabelFor(model => model.DatePosted, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static">@Html.DisplayFor(model => model.DatePosted)</p>
+                                            @Html.HiddenFor(x => x.DatePosted)
+                                        </div>
+                                    </div>
+                                    <div class="form-group text-dark-mid">
+                                        @Html.LabelFor(model => model.SupportType, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static">@Html.DisplayFor(model => model.SupportType)</p>
+                                            @Html.HiddenFor(x => x.SupportType)
+                                        </div>
+                                    </div>
+                                    <div class="form-group text-dark-mid">
+                                        @Html.LabelFor(model => model.LoadWithdrawalType, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static">@Html.DisplayFor(model => model.LoadWithdrawalType)</p>
+                                            @Html.HiddenFor(x => x.LoadWithdrawalType)
+                                        </div>
+                                    </div>
+                                    <div class="form-group text-dark-mid">
+                                        @Html.LabelFor(model => model.IsOpen, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static">@Model.IsOpen</p>
+                                            @Html.HiddenFor(x => x.IsOpen)
+                                        </div>
+                                    </div>
+                                    <div class="form-group text-dark-mid">
+                                        @Html.LabelFor(model => model.Notes, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            <p class="form-control-static">@Html.DisplayFor(model => model.Notes)</p>
+                                            @Html.HiddenFor(x => x.Notes)
+                                        </div>
+                                    </div>
+                                       <div class="form-group text-dark-mid">
+                                        @Html.LabelFor(model => model.CSRNotes, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            @Html.TextAreaFor(model => model.CSRNotes, new { @class = "form-control input-sm" })
+                                        </div>
+                                    </div>
+                                    <div class="form-actions no-margin-bottom text-right">
+                                        @if (ViewBag.IsAdmin)
+                                        { 
+                                         <input type="submit" value="Close Ticket" name="Close" class="btn btn-danger" />
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+

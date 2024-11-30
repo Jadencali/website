@@ -1,0 +1,43 @@
+﻿@model IQueryable<SabongPinoy.Models.v_Arenas>
+
+@{
+    ViewBag.Title = "Events";
+}
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 ">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-left">
+                            <span><i class="ion ion-ios-people fa-fw"></i>Card Balance</span>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="form-wrapper table-responsive text-center">
+
+                                @using (Html.BeginForm("CardBalance", "MySabong", FormMethod.Get))
+                                {
+                                    <div class="form-group input-group form-group-sm">
+                                        <input type="text" name="cardId" class="form-control" placeholder="search" autofocus>
+                                        <span class="input-group-btn">
+                                            <button type="submit" class="btn btn-info btn-sm ">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                }
+                                <h1 class="text-bold">Your Balance: @ViewBag.Balance.ToString("###,###,##0.00")</h1>
+                                <h2 class="text-bold">@Request.QueryString["cardId"]</h2>
+                            </div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

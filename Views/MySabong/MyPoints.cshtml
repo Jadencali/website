@@ -1,0 +1,116 @@
+﻿@model IList<SabongPinoy.Models.UserPointViewModel>
+
+@{
+    ViewBag.Title = "My Points";
+}
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-xs-12  col-sm-12 col-md-12 col-lg-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-left">
+                            <span><i class="ion ion-cash fa-fw"></i>Points</span>
+                            <div class="pull-right">
+                                <div class="btn-group open">
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="form-wrapper table-responsive">
+                                <h2 class="text-left text-custom-one">
+                                    <span class="text-dark"> Total Points: </span>   <strong> @ViewBag.TotalPoints.ToString("###,##0.00") </strong>
+                                </h2>
+                                <hr />
+
+                                <div class="clearfix"></div>
+                                <div class="clearfix"></div>
+                                <div class="clearfix"></div>
+                                <div class="clearfix"></div>
+                                <div class="clearfix"></div>
+                                <div class="clearfix"></div>
+                                <table class="table table-striped table-hover text-dark-space text-left small">
+                                    <thead class="text-center">
+                                        <tr>
+                                            <th>Date Loaded</th>
+                                            <th>Local Date</th>
+                                            <th>Loaded By</th>
+                                            <th>Points From</th>
+                                            <th>Pasaload From</th>
+                                            <th>Pasaload To</th>
+                                            <th>Points</th>
+                                            <th>Balance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @item.UserPoint.DateLoaded
+                                                </td>
+                                                <td>
+                                                    @item.UserPoint.LocalDateTime
+                                                </td>
+                                                <td>
+                                                    @item.LoadedByUsername
+                                                </td>
+                                                <td>
+                                                    @item.UserPoint.LoadedFrom
+                                                </td>
+                                                <td>
+                                                    @item.UserPoint.PasaloadFrom
+                                                </td>
+                                                <td>
+                                                    @item.UserPoint.PasaloadTo
+                                                </td>
+                                                <td class="text-success text-right">
+                                                    @if (@item.UserPoint.Points < 0)
+                                                    {
+                                                        <span class="text-red">
+                                                            @item.UserPoint.Points.ToString("###,###.00")
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-info">
+                                                            @item.UserPoint.Points.ToString("###,###.00")
+                                                        </span>
+                                                    }
+                                                </td>
+
+                                                <td>
+                                                    @if (@item.UserPoint.CurrentTotal.HasValue)
+                                                    {
+                                                        @item.UserPoint.CurrentTotal.Value.ToString("###,##0.00")
+                                                    }
+
+
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <ul class="pagination pagination-sm">
+                            @for (int p = 1; p <= ViewBag.TotalPage; p++)
+                            {
+                                <li class="@(p == ViewBag.CurrentPage ? "active" : " ")">
+                                    <a href="@Url.Action("MyPoints", "MySabong", new { page = @p })"> @p </a>
+                                </li>
+                            }
+                        </ul>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+

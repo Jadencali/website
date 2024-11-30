@@ -1,0 +1,77 @@
+﻿@model IEnumerable<SabongPinoy.Models.UserPointViewModel>
+
+@{
+    ViewBag.Title = "Load Withdrawal Details";
+}
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-sm-11 col-sm-offset-1 col-md-11 col-md-offset-1 col-lg-11 col-lg-offset-1 ">
+                    <div class="panel panel-green">
+                        <div class="panel-heading text-left">
+                            <span><i class="ion ion-ios-people fa-fw"></i>Event Details - @Request.QueryString["m"]/@Request.QueryString["y"] </span>
+                            <div class="pull-right">
+                                <div class="btn-group open">
+                                    <a class=" btn btn-default btn-xs" href="@Url.Action("AdminView", "Admin")" title="Go Back"><i class="ion ion-arrow-left-b fa-fw"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+
+                            <table class="table table-responsive table-striped table-hover text-dark-space text-left small">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th>Date Loaded</th>
+                                        <th>Local Date</th>
+                                        <th>Loaded To</th>
+                                        <th>Loaded By</th>
+                                        <th>Load Type</th>
+                                        <th>Reference #</th>
+                                        <th>Notes</th>
+                                        <th>Points</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @item.UserPoint.DateLoaded
+                                            </td>
+                                            <td>
+                                                @item.UserPoint.LocalDateTime
+                                            </td>
+                                            <td>
+                                                @item.PointUsername
+                                            </td>
+                                            <td>
+                                                @item.LoadedByUsername
+                                            </td>
+                                            <td>
+                                                @item.UserPoint.LoadedFrom
+                                            </td>
+                                            <td>@item.UserPoint.ReferenceTransNumber</td>
+                                            <td class="text-justify">@item.UserPoint.Notes</td>
+                                            <td class="text-success text-right text-red">
+                                                @item.UserPoint.Points.ToString("###,###.00")
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+
+
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

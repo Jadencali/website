@@ -1,0 +1,251 @@
+﻿@model SabongPinoy.Models.ArenaViewModel
+@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_mainLayout.cshtml";
+
+}
+@if (!User.Identity.IsAuthenticated)
+{
+    <div class="container ">
+        <div class="text-center ">
+            <img src="~/img/blue_bg.png" center-block topZero />
+            <div class="col-md-12 center-block col-sm-7 col-sm-offset-2" center-block topZero>
+                <div class="panel panel-whitGray ">
+                    @*<div class="panel-heading">
+                            <i class="fa fa-user"></i>
+                        </div>*@
+                    <div class="panel-body fixed-panelevent ">
+                        @*<div class="round round-lg hollow red">
+                                <span class="glyphicon glyphicon-user"></span>
+                            </div>*@
+
+                        <h3>Sign In</h3>
+
+                        @using (Html.BeginForm("Index", "Home", new { ReturnUrl = ViewBag.ReturnURL }, FormMethod.Post, new { @class = "form-horizontal text-left" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true)
+                            <div class="error-div small">
+                                @Html.ValidationMessage("InvalidLogin")
+                            </div>
+                            <br />
+                            <div class="form-group has-success has-feedback ">
+                                <div class="col-sm-12  ">
+                                    @Html.TextBoxFor(model => model.UserLogin.Username, new { @class = "form-control input input-lg", @placeholder = "enter username" })
+                                    <span class="glyphicon glyphicon-user form-control-feedback" aria-hidden="true"></span>
+                                    <div class="error-div small">
+                                        @Html.ValidationMessageFor(model => model.UserLogin.Username)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group  has-success has-feedback">
+                                <div class="col-sm-12">
+                                    @Html.PasswordFor(model => model.UserLogin.Password, new { @class = "form-control input input-lg", @placeholder = "enter password" })
+                                    <span class="fa fa-key form-control-feedback" aria-hidden="true"></span>
+                                    <div class="error-div small">
+                                        @Html.ValidationMessageFor(model => model.UserLogin.Password)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12 col-xs-12">
+                                    <button type="submit" class="btn col-sm-12 col-xs-12 btn-lg btn-warning btnMainBlackRed  ">Sign in</button>
+                                </div>
+                            </div>
+
+
+
+                        }
+                        <div class="form-group ">
+                            <div class="col-sm-12   ">
+                                @Html.ActionLink("CLICK TO REGISTER", "Register", "Account", null, new { @class = "text-red-underline text-center" })
+                            </div>
+
+                        </div>
+                        <br /><br />
+                        <div class="text-white text-center">
+                            Copyright &copy; Cashless Betting @DateTime.Today.Year
+                        </div>
+
+
+                    </div>
+                </div>
+                <br /> <br />
+
+            </div>
+
+            <div class="col-md-10 ">
+
+            </div>
+
+        </div>
+    </div>
+}
+else
+{
+    ViewBag.BodyClass = "hold-transition sidebar-mini layout-fixed";
+<div class="wrapper">
+    @{
+        Html.RenderAction("Menu", "Home");
+    }
+    <div class="container">
+        <div class="  topZero ">
+            <div class="col-md-6 col-xs-12 ">
+                <div class="panel panel-darkBlue">
+                    <div class="panel-heading">
+                        <i class="fa fa-play-circle"></i>   Today's Event
+                    </div>
+                    <div class="panel-body   text-center ">
+
+                        @{int today = 0;}
+                        <table class="table table-responsive small text-center" id="tblMain">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th class="text-center  ">Event</th>
+                                    <th class="text-center">Location</th>
+                                </tr>
+
+                            </thead>
+                            @foreach (var item in Model.TodaysEvent)
+                            {
+                                today = today + 1;
+                                <tbody>
+                                    <tr>
+                                        <td> <a href="@Url.Action("Watch", "Arena", new { aid = @item.ArenaId })" class="page-scroll btn btn-primary  btn-xl  "><i class="fa fa-video-camera"></i> ENTER</a></td>
+                                        <td>@item.ArenaName -  @item.DateOfFight.ToLongDateString()</td>
+                                        <td>@item.Location</td>
+                                    </tr>
+                                </tbody>
+                            }
+                        </table>
+
+
+
+
+
+                        @if (today == 0)
+                        {
+                            <h2 class="event-name">No schedule today</h2>
+                        }
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class=" col-md-6 col-xs-12 ">
+                <div class="panel panel-darkBlue">
+                    <div class="panel-heading">
+                        <i class="fa fa-money"></i>   Welcome
+                    </div>
+                    <div class="panel-body  topZero">
+                        <h2 class="text-center">Your points</h2>
+                        <h2 class="text-center">
+                            @{ var value = "0.00";}
+                            @if (ViewBag.MainTotalPoints != null)
+                            {
+                                value = @ViewBag.MainTotalPoints.ToString("###,##0.00");
+                            }
+                            @value
+                        </h2>
+                    </div>
+                </div>
+            </div>
+
+            @*<div class="col-md-12 col-xs-12 col-sm-12  ">
+                    <div class="panel panel-darkBlue">
+                        <div class="panel-heading">
+                            <i class="fa fa-headphones"></i>   MENU
+                        </div>
+                        <div class="panel-body fixed-panelevent  text-center">
+
+                            <div class="row">
+
+                                <div class="col-md-3 col-xs-12 col-sm-12">
+                                    <div class="img-with-text">
+                                        <img alt="csr" src="~/img/webpicture.png" class="img-responsive center-block">
+                                        <p>
+
+                                            @Html.ActionLink("Card Balance", "CardBalance", "MySabong")
+                                        </p>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3 col-xs-12 col-sm-12">
+                                    <div class="img-with-text">
+                                        <img alt="csr" src="~/img/tabletprofile.png" class="img-responsive center-block">
+                                        <p>
+                                            @Html.ActionLink("Card Details", "CardInfo", "MySabong")
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 col-xs-12 col-sm-12">
+                                    <div class="img-with-text">
+                                        <img alt="csr" src="~/img/calendardays.png" class="img-responsive center-block">
+                                        <p>
+                                            @Html.ActionLink("Daily Summary", "DailySummary", "Admin")
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 col-xs-12 col-sm-12">
+                                    <div class="img-with-text">
+                                        <img alt="csr" src="~/img/calendartask.png" class="img-responsive center-block">
+                                        <p>
+                                            @Html.ActionLink("Daily Audit", "DailyAudit", "Admin")
+                                        </p>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>*@
+
+
+            @*<div class="col-md-12 col-xs-12 col-sm-12  ">
+                    <div class="panel panel-darkBlue">
+                        <div class="panel-heading">
+                            <i class="fa fa-headphones"></i>   PROMO
+                        </div>
+                        <div class="panel-body fixed-panelevent  text-center">
+
+                            <div class="row">
+
+                                <div class="col-md-6 ">
+                                    <img alt="csr" src="~/img/g-promo-01.jpg" class="img-responsive center-block">
+                                </div>
+                                <div class="col-md-6">
+                                    <img alt="csr" src="~/img/g-promo-02.jpg" class="img-responsive center-block">
+                                </div>
+                                <div class="col-md-6 ">
+                                    <img alt="csr" src="~/img/g-promo-03.jpg" class="img-responsive center-block">
+                                </div>
+                                <div class="col-md-6">
+                                    <img alt="csr" src="~/img/g-promo-04.jpg" class="img-responsive center-block">
+                                </div>
+
+
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>*@
+
+        </div>
+
+
+
+    </div>
+</div>
+}
+
+

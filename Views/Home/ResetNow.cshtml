@@ -1,0 +1,28 @@
+﻿
+@{
+    ViewBag.Title = "ResetNow";
+}
+
+
+
+<div class="login">
+    <div class="container ">
+        <div class="row text-center">
+            <div class="col-sm-5 col-sm-offset-4 col-md-5 col-md-offset-4 col-lg-5 col-lg-offset-4">
+                <h3 class="text-left">Reset Now</h3>
+                <hr>
+                <div class="form-signin">
+                    @using (Html.BeginForm("ResetNow", "Home", null, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="form-group input-group">
+                            <span class="input-group-btn"><button type="submit" class="btn btn-primary" id="sendmessage" value="Send">CLICK TO RESET</button></span>
+                        </div>
+                    }
+                    <h5 class="text-left text-custom-one">@ViewBag.Message</h5>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

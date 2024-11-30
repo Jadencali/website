@@ -1,0 +1,99 @@
+<nav class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <!-- Move the brand to the top of the navbar -->
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a class="navbar-brand " href="~/"><img src="~/img/es.jpg" alt="THUNDER COCKPIT" class="img-responsive"></a>
+            }
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-left ">
+                <li class="hidden">
+                    <a href="#page-top"></a>
+                </li>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="page-scroll ">@Html.ActionLink("Home", "Index", "Home")</li>
+                }
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="page-scroll dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Profile<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li>@Html.ActionLink("Points", "MyPoints", "MySabong")</li>
+                            <li>@Html.ActionLink("Reports", "MyReports", "MySabong")</li>
+                            @*<li>@Html.ActionLink("My Profile", "MyProfile", "MySabong")</li>*@
+                            <li>@Html.ActionLink("Members", "Members", "MySabong")</li>
+                            <li>@Html.ActionLink("REPRINT", "CurrentBets", "MySabong")</li>
+
+                            <li>@Html.ActionLink("Change Password", "ChangePassword", "MySabong")</li>
+
+                            @if (ViewBag.IsSubAdminViewer)
+                            {
+                                <li>@Html.ActionLink("Daily Plasada", "DailyPlasada", "MySabong")</li>
+                            }
+                        </ul>
+                    </li>
+                }
+
+
+                @if (ViewBag.IsAdmin)
+                {
+                    <li class="page-scroll dropdown">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Admin<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Events", "Arena", "Admin")</li>
+
+                            @if (ViewBag.WithUsers)
+                            {
+                                <li>@Html.ActionLink("Users", "Users", "Admin")</li>
+                            }
+
+                            @if (ViewBag.IsAdminViewer)
+                            {
+                                <li>@Html.ActionLink("Daily Reports", "DailyReport", "Admin")</li>
+                                <li>@Html.ActionLink("Admin View", "AdminView", "Admin")</li>
+                            }
+
+                            @if (ViewBag.WithUsers)
+                            {
+                                <li class="divider"></li>
+                                <li>@Html.ActionLink("Audit Trail", "AuditTrail", "Admin")</li>
+                            }
+
+
+                        </ul>
+                    </li>
+
+                }
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="btnMainBlackRed">
+                        <a> @User.Identity.Name ( <span id="lblMainTotalPoints">@ViewBag.MainTotalPoints.ToString("###,##0.##")</span> )</a>
+                    </li>
+                    <li class="">@Html.ActionLink("Logout", "Logout", "Account")</li>
+                }
+                else
+                {
+                    @*<li> @Html.ActionLink("Register", "Register", "Account")  </li>*@
+                    @*<li class="text-custom-one-line login">@Html.ActionLink("LOGIN", "Login", "Account")</li>*@
+
+                }
+
+            </ul>
+
+
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container-fluid -->
+</nav>

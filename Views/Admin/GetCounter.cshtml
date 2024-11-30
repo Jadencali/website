@@ -1,0 +1,62 @@
+﻿@model List<SabongPinoy.Models.CounterViewModel>
+
+@{
+    ViewBag.Title = "Bet Countern";
+   
+}
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-xs-12  col-sm-12 col-md-12 col-lg-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-left">
+                            <span><i class="ion ion-cash fa-fw"></i>Counter</span>
+                            <div class="pull-right">
+                                <div class="btn-group open">
+                                    <a class=" btn btn-default btn-xs" href="@Url.Action("Arena","Admin")" title="Go Back"><i class="ion ion-arrow-left-b fa-fw"></i> </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="form-wrapper table-responsive">
+                                <table class="table table-striped table-responsive table-hover text-dark-space text-left small">
+                                    <thead class="text-center">
+                                        <tr>
+                                            <th>Fight #</th>
+                                            <th>Total Bettors</th>
+                                            <th>Total Winners</th>
+                                        
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @item.FightNumber
+                                                </td>
+                                                <td>
+                                                    @item.TotalBettors
+                                                </td>
+                                                <td>
+                                                    @item.TotalWinners
+                                                </td>
+                                             
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

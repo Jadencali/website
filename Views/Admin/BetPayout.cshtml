@@ -1,0 +1,141 @@
+﻿@model List<SabongPinoy.Models.DUserBets>
+
+@{
+    ViewBag.Title = "Bet Payout";
+    <script>
+        $(function () {
+            $("#txtSearch").focus();
+        });
+
+        $(document).ready(
+            function () {
+                $('.lnkViewPayout').click(function () {
+                    var refNum = $(this).attr('href');
+                    if (refNum != '') {
+                        var x = screen.width / 2 - 700 / 2;
+                        var y = screen.height / 2 - 450 / 2;
+                        window.open(refNum, 'Payout', 'height=485,width=700,left=' + x + ',top=' + y);
+                    }
+                    return false;
+                });
+            }
+        );
+    </script>
+}
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 ">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-left">
+                            <span><i class="ion ion-ios-people fa-fw"></i>Bet Payout - @Request.QueryString["a"]</span>
+                            <div class="pull-right">
+                                <div class="btn-group open">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="form-wrapper table-responsive">
+                                <div class="text-center ">
+                                    @using (Html.BeginForm("BetPayout", "Admin", FormMethod.Get))
+                                    {
+                                        <div class="form-group input-group form-group-sm">
+                                            <input type="text" name="SearchString" id="txtSearch" class="form-control" placeholder="BET ID">
+                                            <span class="input-group-btn">
+                                                <button type="submit" class="btn btn-info btn-sm ">
+                                                    <i class="fa fa-search"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+
+                            <div class="panel-body">
+                                <div class="form-wrapper table-responsive">
+                                    <table class="table table-striped table-responsive table-hover text-dark-space text-left small">
+                                        <thead class="text-center">
+                                            <tr>
+                                                <th>BetId</th>
+                                                <th>Username</th>
+                                                <th>Arena</th>
+                                                <th>Date</th>
+                                                @*<th>Payout Meron</th>
+        <th>Payout Wala</th>*@
+                                                <th>Fight No</th>
+                                                <th>Bet Date</th>
+                                                <th>Bet On</th>
+                                                <th>Bet</th>
+                                                <th>Points</th>
+                                                <th>Paid</th>
+                                                <th>Paid by</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model)
+                                            {
+                                            <tr>
+
+                                                <td>
+                                                    @item.UserBetId
+                                                </td>
+                                                <td>
+                                                    @item.Username
+                                                </td>
+                                                <td>
+                                                    @item.ArenaName
+                                                </td>
+                                                <td>
+                                                    @item.DateOfFight.ToString("MM/dd/yyyy")
+                                                </td>
+                                                @*<td>
+            @item.PayoutMeron
+        </td>
+        <td>
+            @item.PayoutWala
+        </td>*@
+                                                <td>
+                                                    @item.GameNumber
+                                                </td>
+                                                <td>
+                                                    @item.LocalDateTime.Value.ToString("MM/dd/yyyy hh:mm:ss tt")
+                                                </td>
+                                                <td>
+                                                    @item.BetOn
+                                                </td>
+                                                <td class=" text-right ">
+                                                    @item.MatchedAmount.ToString("###,##0.00")
+                                                </td>
+                                                <td>
+                                                    @item.Total.ToString("###,##0.00")
+                                                </td>
+                                                <td>
+                                                    @item.IsPaid
+                                                </td>
+                                                <td>
+                                                    @item.PaidBy
+                                                </td>
+                                                <td>
+                                                    <a href="~/Admin/Payout?searchString=@item.UserBetId" class="btn btn-sm btn-warning lnkViewPayout">Print</a>
+                                                </td>
+                                            </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

@@ -1,0 +1,66 @@
+﻿@model SabongPinoy.Models.ArenaPayoutViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>eGameCashier.com - Total</title>
+
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <link href="~/Content/styles.css" rel="stylesheet" />
+    <style type="text/less">
+        body {
+            background-color: #000;
+        }
+    </style>
+</head>
+<body class="login">
+    <div class="container-fluid">
+        <div class="row">
+            <br /><br />
+            <div class="col-md-12 col-sm-12 col-xs-12  ">
+
+
+                <div id="printThis" style="text-transform:uppercase;font-family: Lucida Console, Courier, monospace;font-size:30px;">
+
+                    <div class="col-md-12 text-center ">
+                        <span>
+                            Cashier:<span> @User.Identity.Name</span>
+                        </span>
+                    </div>
+                    <div class="col-md-12 text-center ">
+                        <span>
+                            Payin:<span> @Model.TotalPayin.ToString("###,###,###.##")</span>
+                        </span>
+                    </div>
+                    <div class="col-md-12 text-center ">
+                        <span>
+                            Payout:<span> @Model.TotalPayout.ToString("###,###,###.##")</span>
+                        </span>
+                    </div>
+
+
+                    <div class="col-md-12 text-center titleDarkBgAltLogout">
+                        <span>
+                            Total (Payin - Payout):<span> @Model.Total.ToString("###,###,###.##")</span>
+                        </span>
+                    </div>
+
+                    <div class="col-md-12 text-center padded">
+                        <span>
+                            <input type="submit" value="CLOSE" name="Close" onclick="window.close()" class="btn btn-warning btn-block  " />
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

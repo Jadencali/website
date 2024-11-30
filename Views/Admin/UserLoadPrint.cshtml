@@ -1,0 +1,65 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+
+    <meta http-equiv="refresh" content="5; URL=../Admin/UserLoad?uid=@Request.QueryString["uid"]&un=@Request.QueryString["un"]">
+
+    <title>eGameCashier.com - Bet</title>
+    <script src="~/Scripts/print.min.js"></script>
+
+    <script src="~/Scripts/JsBarcode.all.min.js"></script>
+
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script>
+        $(function () {
+            printJS('printDiv', 'html');
+        });
+    </script>
+</head>
+<body>
+    <div id="printDiv" style="text-transform:uppercase;font-family: Lucida Console, Courier, monospace;font-size:11px;">
+        <table>
+            <tr>
+                <td class="title" style="font-weight: bold;">
+                    Username:
+                </td>
+                <td>@Request.QueryString["un"]</td>
+            </tr>
+            <tr>
+                <td class="title" style="font-weight: bold;">
+                    Load Type:
+                </td>
+                <td>@Request.QueryString["lf"]</td>
+            </tr>
+            <tr>
+                <td class="title" style="font-weight: bold;">
+                    Date:
+                </td>
+                <td>@DateTime.Now.ToString("MM/dd/yyyy hh:mm:tt")</td>
+            </tr>
+
+            <tr>
+                <td class="title" style="font-weight: bold;">
+                    Points
+                <td>@Convert.ToDecimal(@Request.QueryString["pts"]).ToString("###,###,###")
+               </td>
+            </tr>
+            <tr>
+                <td class="title" style="font-weight: bold;">
+                    Cashier:
+                </td>
+                <td>@Request.QueryString["lb"]</td>
+            </tr>
+
+        </table>
+    </div>
+    <a href="~/admin/UserLoad?uid=@Request.QueryString["uid"]&un=@Request.QueryString["un"]">BACK TO User LOADING</a>
+</body>
+</html>

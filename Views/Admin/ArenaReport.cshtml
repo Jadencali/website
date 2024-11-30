@@ -1,0 +1,139 @@
+﻿@model  SabongPinoy.Models.ArenaReportViewModel
+
+@{
+    ViewBag.Title = "Arena Reports";
+}
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-xs-12  col-sm-12 col-md-12 col-lg-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-left">
+                            <span><i class="ion ion-cash fa-fw"></i>Reports</span>
+                            <div class="pull-right">
+                                <div class="btn-group open">
+                                    <a class=" btn btn-default btn-xs" href="@Url.Action("Arena", "Admin")" title="Go Back"><i class="ion ion-arrow-left-b fa-fw"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="form-wrapper table-responsive">
+                                <h2 class="text-left text-custom-one">
+                                    <span class="text-dark"> Arena: </span>   <strong> @Request.QueryString["a"] </strong>
+                                </h2>
+                                <hr />
+                                <div class="col-md-6 col-sm-6 label">
+                                    <div class="label-danger">
+                                        <h4>Total Cancel:</h4>
+                                        <h4>@Model.CancelDraw.TotalCancel.ToString("###,##0.##")</h4>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 label">
+                                    <div class="label-danger">
+                                        <h4>Total Draw:</h4>
+                                        <h4>@Model.CancelDraw.TotalDraw.ToString("###,##0.##")</h4>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-sm-12 label">
+                                    <a href="/Admin/DrawCancelReports?aid=@Request.QueryString["aid"]&a=@Request.QueryString["a"]" class="btn btn-lg btn-block btn-warning">VIEW ALL DRAW AND CANCEL BETS</a>
+                                </div>
+                                    <div class="clearfix"></div>
+                                    <div class="clearfix"></div>
+                                    <div class="clearfix"></div>
+                                    <div class="clearfix"></div>
+                                    <div class="clearfix"></div>
+                                    <div class="clearfix"></div>
+                                    <table class="table table-striped table-hover text-dark-space text-left small">
+                                        <thead class="text-center">
+                                            <tr>
+                                                <th colspan="2">
+                                                    <h4>TOTAL PAYIN</h4>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <th>Username</th>
+                                                <th>Total Bet</th>
+                                                <th>Total Plasada</th>
+                                                @* <th>Total</th>
+                        <th>Plasada</th>*@
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.ArenaReportPayin)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @item.Username
+                                                    </td>
+
+                                                    <td>
+                                                        @item.TotalBet.ToString("###,##0.##")
+                                                    </td>
+
+                                                    <td class="merontext">
+                                                        @item.TotalPlasada.ToString("###,##0.##")
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+
+                                    <table class="table table-striped table-hover text-dark-space text-left small">
+                                        <thead class="text-center">
+                                            <tr>
+                                                <th colspan="2">
+                                                    <h4>TOTAL PAYOUT</h4>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <th>Username</th>
+                                                <th>Total PAYOUT</th>
+                                                <th>Cance/Draw</th>
+                                                @*<th>Total Payout</th>
+                        <th>Total</th>
+                        <th>Plasada</th>*@
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.ArenaReportPayOut)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @item.Username
+                                                    </td>
+
+                                                    <td>
+                                                        @item.TotalPayout.ToString("###,##0.##")
+                                                    </td>
+
+                                                    <td>
+                                                        @if (@item.IsCancelDraw == 1)
+                                                        {
+                                                            <span>YES</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>NO</span>
+                                                        }
+                                                    </td>
+
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                    
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+

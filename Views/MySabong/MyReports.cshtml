@@ -1,0 +1,84 @@
+﻿@model IQueryable<SabongPinoy.Models.ReportsPoints>
+
+@{
+    ViewBag.Title = "My Reports";
+}
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-xs-12  col-sm-12 col-md-12 col-lg-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-left">
+                            <span><i class="ion ion-cash fa-fw"></i>Reports</span>
+                            <div class="pull-right">
+                                <div class="btn-group open">
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="form-wrapper table-responsive">
+                                <table class="table table-striped table-responsive table-hover text-dark-space text-left small">
+                                    <thead class="text-center">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Event</th>
+                                            <th>Total Fight</th>
+                                            <th>Total Points</th>
+                                            <th>Total Commision</th>
+                                            <th></th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @item.DateOfFight.ToString("MM/dd/yyyy")
+                                                </td>
+                                                <td>
+                                                    @item.ArenaName
+                                                </td>
+                                                <td>
+                                                    @item.TotalFights
+                                                </td>
+                                                <td class=" text-right ">
+                                                    @item.TotalPoints.Value.ToString("###,##0.00")
+                                                </td>
+                                                <td class=" text-right ">
+                                                    @item.TotalCommision.Value.ToString("###,##0.00")
+                                                </td>
+                                                <td class=" text-center text-red ">
+                                                    @Html.ActionLink("details", "ReportDetails", "MySabong", new { aid = @item.ArenaId, a = @Html.Raw(@item.ArenaName), m = @item.MeronRightSide }, new { @class = "btn btn-danger btn-xs" })
+                                                    @Html.ActionLink("Pending", "ArenaPending", "MySabong", new { aid = @item.ArenaId, a = @Html.Raw(@item.ArenaName) }, new { @class = "btn btn-primary  btn-xs" })
+
+
+                                                    @Html.ActionLink("draw", "ReportDetailsDraw", "MySabong", new { aid = @item.ArenaId, a = @Html.Raw(@item.ArenaName) }, new { @class = "btn btn-warning btn-xs" })
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <ul class="pagination pagination-sm">
+                            @for (int p = 1; p <= ViewBag.TotalPage; p++)
+                            {
+                                <li class="@(p == ViewBag.CurrentPage ? "active" : " ")">
+                                    <a href="@Url.Action("MyReports", "MySabong", new { page = @p })"> @p </a>
+                                </li>
+                            }
+                        </ul>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

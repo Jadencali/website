@@ -1,0 +1,124 @@
+﻿@model SabongPinoy.Models.DailyPlasadaSummaryViewModel
+
+@{
+    ViewBag.Title = "Daily Plasada";
+}
+
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 ">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-left">
+                            <span><i class="ion ion-cash fa-fw"></i>Reports</span>
+                            <div class="pull-right">
+                                <div class="btn-group open">
+                                    @DateTime.Now.AddHours(@ViewBag.ServerHours)
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="form-wrapper">
+                                <table class="table table-responsive table-condensed text-dark-space text-left small">
+                                    <thead class="text-center meronbackground">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Event</th>
+                                            <th>Total Fight</th>
+                                            <th>Total Commision</th>
+                                            @*<th></th>*@
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.ReportPlasada)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @item.DateOfFight.ToString("MM/dd/yyyy")
+                                                </td>
+                                                <td>
+                                                    @item.ArenaName
+                                                </td>
+                                                <td>
+                                                    @item.TotalFights
+                                                </td>
+                                                <td class=" text-right ">
+                                                    @item.LessComm.ToString("###,##0.00")
+                                                </td>
+                                                @*<td class=" text-center text-red ">
+                                                        @Html.ActionLink("details", "AdminReportDetails", "Admin", new { aid = @item.ArenaId, a = @Html.Encode(@item.ArenaName) }, new { @class = "btn btn-danger btn-xs" })
+                                                    </td>*@
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <ul class="pagination pagination-sm">
+                            @for (int p = 1; p <= ViewBag.TotalPage; p++)
+                            {
+                                <li class="@(p == ViewBag.CurrentPage ? "active" : " ")">
+                                    <a href="@Url.Action("DailyPlasada", "MySabong", new { page = @p })"> @p </a>
+                                </li>
+                            }
+                        </ul>
+                        <!-- /.panel-body -->
+                    </div>
+
+                    <!--<div class="panel panel-grey">
+                        <div class="panel-heading text-left">
+                            <span><i class="ion ion-cash fa-fw"></i>Commission Summary</span>
+                            <div class="pull-right">
+                                <div class="btn-group open">
+
+                                </div>
+                            </div>
+                        </div>-->
+                        <!-- /.panel-heading -->
+                        <!--<div class="panel-body">
+                            <div class="form-wrapper">
+                                <table class="table table-responsive  table-condensed text-dark-space text-left small">
+                                    <thead class="text-center">
+                                        <tr>
+                                            <th>Year</th>
+                                            <th>Month</th>
+                                            <th class=" text-right ">Commission</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.ReportCommissionSummary)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @item.YearPoints
+                                                </td>
+                                                <td>
+                                                    @item.MonthPoints
+                                                </td>
+                                                <td class=" text-right ">
+                                                    @item.Commission.Value.ToString("###,##0.00")
+                                                </td>
+
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>-->
+
+                        <!-- /.panel-body -->
+                    <!--</div>-->
+
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

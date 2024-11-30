@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="THUNDER COCKPIT BETTING PLATFORM">
+    <meta name="author" content="THUNDER COCKPIT">
+
+
+    <title>THUNDER COCKPIT - @ViewBag.Title</title>
+
+    <link rel="icon" href="~/img/favicon.ico">
+    <!-- Bootstrap core CSS -->
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet">
+    <link href="~/Content/fontawesome-free-6.5.2-web/css/all.min.css" rel="stylesheet" />
+    <!-- Custom styles for this template -->
+
+    <link href="~/Content/main.css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+
+
+
+</head>
+@*@{ var className = ""; }
+@if (User.Identity.IsAuthenticated)
+{
+className = "mainbg";
+
+}*@
+
+<body class="@ViewBag.BodyClass dark-mode">
+
+    <!-- Navigation -->
+    @* @{
+    Html.RenderAction("LightMenu", "Home");
+    } *@
+
+    @RenderBody()
+    @*@if (User.Identity.IsAuthenticated)
+    {
+    <footer>
+    <div class="container">
+    <div class="row">
+    <div class="col-lg-12 text-center">
+    <p>Copyright &copy; Go7J.live @DateTime.Today.Year</p>
+    </div>
+    </div>
+    </div>
+    </footer>
+    }*@
+
+</body>
+
+</html>

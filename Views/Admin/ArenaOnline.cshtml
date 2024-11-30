@@ -1,0 +1,100 @@
+﻿@{
+    ViewBag.Title = "ArenaOnline";
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        
+    $(function () {
+      
+        var chatHub = $.connection.chatHub;
+        $.connection.hub.qs = "arenaId=" + getQueryStringValueByKey("aid");
+        
+        chatHub.client.getUsers = function (currentUsers) {
+            displayWhoIsOnline(currentUsers, '');
+        };
+
+        $.connection.hub.start().done(function () {
+            chatHub.server.getCurrentUsers();
+        });
+
+        
+    });
+
+    function getQueryStringValueByKey(key) {
+        var url = window.location.href;
+        var values = url.split(/[\?&]+/);
+        for (i = 0; i < values.length; i++) {
+            var value = values[i].split("=");
+            if (value[0] == key) {
+                return value[1];
+            }
+        }
+    }
+
+    function displayWhoIsOnline(allUsers, username) {
+        if ($("#tblWhoIsOnline").length > 0) {
+            for (i = 0; i < allUsers.length; i++) {
+                var users = $('#tblWhoIsOnline td').filter(function () { return $(this).text() == allUsers[i].UserName; });
+                if (users.length == 0) {
+                    row = $("<tr></tr>");
+                    col1 = $("<td>" + allUsers[i].UserName + "</td>");
+                    row.append(col1).prependTo("#tblWhoIsOnline");
+                }
+                if (username.length > 0) {
+                    $("#tblWhoIsOnline tr td:contains('" + username + "')").each(function () {
+                        if ($(this).text() == username) {
+                            $(this).parent().remove();
+                        }
+                    });
+                }
+
+            }
+        }
+
+    }
+
+</script>
+}
+
+
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 ">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-left">
+                            <i class="ion-ios-people"></i>Who is Online - @Request.QueryString["a"]
+                            <div class="pull-right">
+                                <div class="btn-group open">
+                                    <a class=" btn btn-default btn-xs" href="@Url.Action("Arena","Admin")" title="Go Back"><i class="ion ion-arrow-left-b fa-fw"></i> </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body fixed-panel-online  alert-muted  small">
+                            <div class="row">
+                                <table class="table table-responsive text-dark-space text-left small " id="tblWhoIsOnline">
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <input type="hidden" value="@ViewBag.Username" name="usernameId" id="usernameId" />
+    <input type="hidden" value="@ViewBag.UserId" name="hduserid" id="hdUserId" />
+        
+
+</div>
+
+

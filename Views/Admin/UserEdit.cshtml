@@ -1,0 +1,148 @@
+﻿@model SabongPinoy.Models.UserRoleProfileViewModel
+@{
+    ViewBag.Title = "User Edit";
+}
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 ">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-left">
+                            <i class="ion-ios-people"></i> Edit User
+                            <div class="pull-right">
+                                <div class="btn-group open">
+                                    <a class=" btn btn-default btn-xs" href="@Url.Action("Users", "Admin")" title="Go Back"><i class="ion ion-arrow-left-b fa-fw"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="form-wrapper">
+                                <h3 class="text-left text-custom-one">Registration Form</h3>
+                                <hr />
+                                @using (Html.BeginForm("UserEdit", "Admin", new { uid = @Request.QueryString["uid"], un = @Request.QueryString["un"] }, FormMethod.Post, new { @class = "form-horizontal text-left" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.ValidationSummary(true)
+                                    <div class="error-div small">
+                                        <p class="alert-danger"> @ViewBag.Message</p>
+                                    </div>
+
+                                    @Html.HiddenFor(model => model.UserId)
+                                    @Html.HiddenFor(model => model.RoleId)
+
+                                    <div class="form-group text-dark-mid">
+                                        @Html.LabelFor(model => model.IsAdmin, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8 ">
+                                            @Html.CheckBoxFor(model => model.IsAdmin, new { @class = "checkbox pull-left" })
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group text-dark-mid hidden">
+                                        @Html.LabelFor(model => model.UserId, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            @Html.TextBoxFor(model => model.UserId, new { @class = "form-control input-sm", @disabled = "" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group text-dark-mid">
+                                        @Html.LabelFor(model => model.Username, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            @Html.TextBoxFor(model => model.Username, new { @class = "form-control input-sm", @disabled = "" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group text-dark-mid">
+                                        @Html.LabelFor(model => model.LastName, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            @Html.TextBoxFor(model => model.LastName, new { @class = "form-control input-sm", @readonly = "" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group text-dark-mid">
+                                        @Html.LabelFor(model => model.FirstName, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control input-sm", @readonly = "" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group text-dark-mid">
+                                        @Html.LabelFor(model => model.Email, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            @Html.TextBoxFor(model => model.Email, new { @class = "form-control input-sm", @readonly = "" })
+                                        </div>
+                                    </div>
+
+
+
+
+                                    <div class="form-group text-dark-mid">
+                                        @Html.LabelFor(model => model.IsActive, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8 ">
+                                            @if (ViewBag.IsActivationAdmin)
+                                            {
+                                                @Html.CheckBoxFor(model => model.IsActive, new { @class = "checkbox pull-left" })
+                                            }
+                                            else
+                                            {
+                                                @Html.CheckBoxFor(model => model.IsActive, new { @class = "checkbox pull-left", @disabled = "disabled" })
+                                            }
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group text-dark-mid hidden">
+                                        @Html.LabelFor(model => model.NoChat, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8 ">
+                                            @Html.CheckBoxFor(model => model.NoChat, new { @class = "checkbox pull-left" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group text-dark-mid hidden">
+                                        @Html.LabelFor(model => model.FBAccount, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            @Html.TextBoxFor(model => model.FBAccount, new { @class = "form-control input-sm" })
+                                            <div class="error-div small">
+                                                @Html.ValidationMessageFor(model => model.FBAccount)
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+
+                                    <div class="form-group text-dark-mid hidden">
+                                        @Html.LabelFor(model => model.Agent, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            @Html.TextBoxFor(model => model.Agent, new { @class = "form-control input-sm" })
+                                            <div class="error-div small">
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+
+                                    @*if (ViewBag.WithActivation)
+            {
+                <div class="form-actions no-margin-bottom text-right">
+                    <input type="submit" value="Save" name="UserEdit" class="btn btn-primary" />
+                </div>
+            }*@
+
+                                    <div class="form-actions no-margin-bottom text-right">
+                                        <input type="submit" value="Save" name="UserEdit" class="btn btn-primary" />
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

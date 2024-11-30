@@ -1,0 +1,169 @@
+﻿@model SabongPinoy.Models.DUserBets
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>eGameCashier.com - Bet</title>
+    <script src="~/Scripts/print.min.js"></script>
+
+    @*<script src=" https://printjs-4de6.kxcdn.com/print.min.js"></script>*@
+
+    @*<style type="text/css">
+            @@media print {
+                @@page {
+                    padding: 0;
+                    margin: 10%;
+                }
+
+                html, body {
+                    position: relative;
+                    width: 100%;
+                    height: 100%;
+                    max-width: 100%;
+                    max-height: 97%;
+                    margin: 0;
+                    padding: 0;
+                    text-align: center;
+                }
+
+                svg {
+                    width: 100%;
+                    height: 100%;
+                    max-width: 100%;
+                    max-height: 100%;
+                }
+
+                table {
+                    width: 100%;
+                    height: 40vh;
+                    table-layout: fixed;
+                }
+
+                    table tr th {
+                        text-align: center;
+                        font-family: Tahoma;
+                        padding-left: 20px;
+                        /* padding-top: 10px;*/
+                        padding-right: 20px;
+                    }
+
+                    table tr td {
+                        text-align: left;
+                        /* font-size: 40px;*/
+                        text-transform: uppercase;
+                        text-transform: uppercase;
+                        font-family: Lucida Console, Courier, monospace;
+                    }
+
+                        table tr td.title {
+                            text-align: left;
+                            /* font-size: 40px;*/
+                            font-weight: bold;
+                            text-transform: uppercase;
+                            font-family: Lucida Console, Courier, monospace;
+                        }
+
+                #printDiv {
+                    /*  padding-top: 25px;*/
+                    width: 2000px;
+                    background-color: #fff;
+                    clear: both;
+                    display: block;
+                    margin: 0 auto;
+                }
+            }
+        </style>*@
+    @*<script src="https://cdn.jsdelivr.net/jsbarcode/3.3.20/JsBarcode.all.min.js"></script>*@
+
+
+    <script src="~/Scripts/JsBarcode.all.min.js"></script>
+
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script>
+        $(function () {
+              JsBarcode("#code128", @Request.QueryString["id"], {
+                format: "CODE128",
+                  height: 30,
+                  displayValue: true
+
+
+        });
+            printJS('printDiv', 'html');
+            setTimeout(window.close, 500);
+        });
+    </script>
+</head>
+<body>
+
+
+
+
+    <div id="printDiv" style="text-transform: uppercase; font-family: Verdana, Helvetica, sans-serif; font-size: 11px;">
+        <table>
+            <tr>
+                <td colspan="2">@Model.ArenaName</td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;">
+                    Bet Id:
+                </td>
+                <td>@Model.UserBetId</td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;">
+                    Username:
+                </td>
+                <td>@Model.Username</td>
+            </tr>
+
+            <tr>
+                <td style="font-weight:bold;">
+                    Fight #:
+                </td>
+                <td>@Model.GameNumber</td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;">
+                    Bet:
+                </td>
+                <td style="font-weight: bold; font-size: 15px; ">@Model.MatchedAmount.ToString("###,###,###.##")</td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;">
+                    Bet on:
+                </td>
+                <td style="font-weight:bold;font-size:15px;">
+                    @Model.BetOn
+                </td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;" colspan="2">
+                    Date:
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">@Model.LocalDateTime</td>
+            </tr>
+        </table>
+        <svg id="code128"></svg>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

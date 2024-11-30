@@ -1,0 +1,174 @@
+﻿@model SabongPinoy.Models.Arena
+@{
+    ViewBag.Title = "Event";
+
+    <link href="~/Content/bootstrap-datepicker.min.css" rel="stylesheet" />
+
+    <script src="~/Scripts/bootstrap-datepicker.min.js"></script>
+
+    <script type="text/javascript">
+        $(function () { // will trigger when the document is ready
+            $('.datepicker').datepicker({
+                format: 'MM/dd/yyyy',
+                startDate: '1d',
+                todayHighlight: true,
+            }); //Initialise any date pickers
+        });
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 ">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-left">
+                            <i class="ion-ios-people"></i> Event
+                            <div class="pull-right">
+                                <div class="btn-group open">
+                                    <a class=" btn btn-default btn-xs" href="@Url.Action("Arena","Admin")" title="Go Back"><i class="ion ion-arrow-left-b fa-fw"></i> </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="form-wrapper">
+                                <h3 class="text-left text-custom-one">Event Information</h3>
+                                <hr />
+                                @using (Html.BeginForm("ArenaForm", "Admin", new { aid = Request.QueryString["aid"] }, FormMethod.Post, new { @class = "form-horizontal text-left" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.ValidationSummary(true)
+                                    <div class="error-div small">
+                                        <p class="alert-danger"> @ViewBag.Message</p>
+                                    </div>
+                                    <div class="form-group text-dark-mid">
+                                        @Html.LabelFor(model => model.ArenaName, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            @Html.TextBoxFor(model => model.ArenaName, new { @class = "form-control input-sm " })
+                                            <span class="text-info small">Ex: Event Name (3pm)</span>
+                                            <div class="error-div small">
+                                                @Html.ValidationMessageFor(model => model.ArenaName)
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group text-dark-mid">
+                                        @Html.LabelFor(model => model.DateOfFight, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-3 text-dark-mid">
+                                            @Html.TextBoxFor(model => model.DateOfFight, "{0:MM/dd/yyyy}", new { @class = "form-control input-sm text-muted  datepicker " })
+                                            <div class="error-div small">
+                                                @Html.ValidationMessageFor(model => model.DateOfFight)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group text-dark-mid">
+                                        @Html.LabelFor(model => model.Location, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            @Html.TextBoxFor(model => model.Location, new { @class = "form-control input-sm" })
+                                            <div class="error-div small">
+                                                @Html.ValidationMessageFor(model => model.Location)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group text-dark-mid">
+                                        @Html.LabelFor(model => model.MeronRightSide, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            @Html.CheckBoxFor(model => model.MeronRightSide, new { @class = "checkbox pull-left" })
+                                            <div class="error-div small">
+                                                @Html.ValidationMessageFor(model => model.MeronRightSide)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group text-dark-mid">
+                                        @Html.LabelFor(model => model.IsOpen, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            @Html.CheckBoxFor(model => model.IsOpen, new { @class = "checkbox pull-left" })
+                                            <div class="error-div small">
+                                                @Html.ValidationMessageFor(model => model.IsOpen)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group text-dark-mid hidden">
+                                        @Html.LabelFor(model => model.IsFuture, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            @Html.CheckBoxFor(model => model.IsFuture, new { @class = "checkbox pull-left" })
+                                            <div class="error-div small">
+                                                @Html.ValidationMessageFor(model => model.IsFuture)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group text-dark-mid hidden">
+                                        @Html.LabelFor(model => model.VideoCode, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            @Html.TextAreaFor(model => model.VideoCode, new { @class = "form-control input-sm" })
+                                            <div class="error-div small">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group text-dark-mid hidden">
+                                        @Html.LabelFor(model => model.CSRVideo, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            @Html.TextAreaFor(model => model.CSRVideo, new { @class = "form-control input-sm" })
+                                            <div class="error-div small">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="form-group text-dark-mid hidden">
+                                        @Html.LabelFor(model => model.VideoScriptTag, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            @Html.TextAreaFor(model => model.VideoScriptTag, new { @class = "form-control input-sm" })
+                                            <div class="error-div small">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group text-dark-mid">
+                                        @Html.LabelFor(model => model.Plasada, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            @Html.TextBoxFor(model => model.Plasada, new { @class = "form-control input-sm" })
+                                            <div class="error-div small">
+                                                @Html.ValidationMessageFor(model => model.Plasada)
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group text-dark-mid ">
+                                        @Html.LabelFor(model => model.IsAutoBet, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            @Html.TextBoxFor(model => model.IsAutoBet, new { @class = "form-control input-sm" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-actions no-margin-bottom text-right">
+                                        <input type="submit" value="Save" class="btn btn-primary" />
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

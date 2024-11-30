@@ -1,0 +1,1415 @@
+﻿@model SabongPinoy.Models.GameViewModel
+@{
+    ViewBag.Title = "Watch Live Fights";
+    <link href="~/Content/clock.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/jquery.noty.packaged.min.js"></script>
+    <script src="~/Scripts/arena.js"></script>
+    <script type="text/javascript">
+        function reverseOdd(yourString) {
+            var n = yourString.toString().split("-");
+            return n[1] + '-' + n[0];
+        }
+    </script>
+    <script src="~/Scripts/gistfile1.js"></script>
+    <script src="~/Scripts/clock-v3.js"></script>
+}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-7 col-xs-12 bettingBgColor nopadding">
+            <div class="col-md-12 col-lg-12  col-xs-12 nopadding">
+
+                @if (Model.Arena.MeronRightSide)
+                {
+                    <div class="col-md-2 col-lg-2  col-xs-2  wala-background-gradient text-center padded"><strong class="small">WALA</strong></div>
+                    <div class="col-md-8 col-lg-8  col-xs-8 text-center padded">
+                        @Model.Arena.ArenaName
+
+                    </div>
+                    <div class="col-md-2 col-lg-2  col-xs-2 meron-background-gradient text-center padded"><strong class="small">MERON</strong></div>
+                }
+                else
+                {
+                    <div class="col-md-2 col-lg-2  col-xs-2 meron-background-gradient text-center padded"><strong class="small">MERON</strong></div>
+                    <div class="col-md-8 col-lg-8  col-xs-8 text-center padded">
+                        @Model.Arena.ArenaName
+                    </div>
+                    <div class="col-md-2 col-lg-2  col-xs-2 wala-background-gradient text-center padded"><strong class="small">WALA</strong></div>
+                }
+            </div>
+            <div class="col-md-12 col-lg-12  col-xs-12 nopadding">
+                <div class="panel panel-black panelReset">
+                    <div id='mediaplayer' class="embed-responsive embed-responsive-16by9">
+
+                        @*@if (!ViewBag.IsChatOnline)
+                            {
+                                if (Model.TotalPoints < 200)
+                                {
+                                    if (!ViewBag.NoWatermark)
+                                    {
+                                        <div id="overlayScreen">
+                                            <img src="~/img/ld-receiver.jpg" class="img-responsive imgFade" />
+                                        </div>
+                                    }
+
+
+                                }
+                            }*@
+
+                        @if (!string.IsNullOrEmpty(Model.Arena.VideoCode))
+                        {
+                            if (Model.Arena.VideoCode.StartsWith("rtmp"))
+                            {
+
+                                <script src="https://releases.flowplayer.org/js/flowplayer-3.2.13.min.js"></script>
+                                <a class="player"
+                                   style="display:block;width:614px;height:357px;margin:10px auto"
+                                   id="streams">
+                                </a>
+                                <script>
+        $f("streams", "https://releases.flowplayer.org/swf/flowplayer-3.2.18.swf", {
+            clip: {
+
+                provider: 'rtmp',
+                live: true,
+                url: '@Model.Arena.VideoCode',
+
+                onStart: function () {
+                    this.setVolume(100);
+                }
+            },
+            plugins: {
+                controls: {
+                    scrubber: false,
+                    fullscreen: true
+                },
+
+                rtmp: {
+                    url: "https://releases.flowplayer.org/swf/flowplayer.rtmp-3.2.13.swf",
+                    netConnectionUrl: '@Model.Arena.VideoCode'
+                }
+            }
+        });
+                                </script>
+                            }
+
+                            else
+                            {
+                                @Html.Raw(@Model.Arena.VideoCode)
+                            }
+                        }
+                        else
+                        {
+                            @*<img alt="SabongBakbakan" src="~/img/ld-receiver.jpg" class="img-responsive center-block">*@
+                        }
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-sm-12 col-xs-12 nopadding hidden">
+                <div class="col-md-12 col-lg-12 col-xs-12 ">
+                    <div class="panel panel-primary-chat">
+                        <div class="panel-heading chat-heading text-left ">
+                            <span>
+                                <i class="ion ion-ios-people fa-fw"></i>Chat @if (ViewBag.IsChatOnline)
+                                {<span id="numberOnline"></span>}
+
+                            </span>
+                            <span class="pull-right small">
+                                <input type="checkbox" value="1" checked id="chkAutoScroll">
+
+
+                                <a href="@Request.Url.AbsoluteUri" class="btn  btn-xs btn-success " title="refresh">refresh</a>
+                            </span>
+                        </div>
+                        <div class="panel-body fixed-panel-chat-dark text-left " id="discussion">
+
+
+
+                        </div>
+
+                        <div class="panel-footer text-primary text-center padded">
+                            <div class="form-group chat-footer input-group ">
+                                @if (Model.WithChat)
+                                {
+                                    if (!ViewBag.IsChatOnline)
+                                    {
+                                        <input type="text" id="message" class="form-control input-sm" />
+                                        <span class="input-group-btn vertical">
+                                            <button type="button" class="btn btn-primary btn-sm" id="sendmessage" value="Send"><i class="ion-chatbox-working"></i></button>
+                                            <button class="btn btn-default btn-sm" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                                <img src="~/img/emo-happy-sm.png" class="emo" alt="emoji" />
+                                            </button>
+
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <input type="text" id="message" class="form-control input-sm" />
+                                        <span class="input-group-btn vertical">
+                                            <button type="button" class="btn btn-primary btn-sm" id="sendmessage" value="Send"><i class="ion-chatbox-working"></i></button>
+                                            <button class="btn btn-default btn-sm" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                                <img src="~/img/emo-happy-sm.png" class="emo" alt="emoji" />
+                                            </button>
+
+                                        </span>
+                                    }
+                                }
+
+                            </div>
+                            <a href="#" target="_blank" class="btn btn-xs btn-primary   small" title="csr">csr</a>
+                        </div>
+                        <div class="collapse fixed-panel-chat" id="collapseExample">
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/emo-coffee.gif" alt="emo-coffee" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/emo-corn.gif" alt="emo-corn" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0001.gif" alt="0001" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji " type="button">
+                                    <img src="~/img/emoji/0002.gif" alt="0002" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+                            <div class="col-md-1 col-sm-1 col-xs-1 ">
+                                <button class="btn btn-default btn-xs buttonEmoji " type="button">
+                                    <img src="~/img/emoji/0003.gif" alt="0003" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0004.gif" alt="0004" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0006.gif" alt="0006" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/emoji-beer.gif" alt="emoji-beer" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0007.gif" alt="0007" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0008.gif" alt="0008" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0009.gif" alt="0009" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0010.gif" alt="0010" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0011.gif" alt="0011" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0012.gif" alt="0012" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0013.gif" alt="0013" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0014.gif" alt="0014" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0015.gif" alt="0015" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0016.gif" alt="0016" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0017.gif" alt="0017" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0018.gif" alt="0018" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0019.gif" alt="0019" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0020.gif" alt="0020" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0021.gif" alt="0021" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0022.gif" alt="0022" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0023.gif" alt="0023" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0024.gif" alt="0024" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0025.gif" alt="0025" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0026.gif" alt="0026" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0027.gif" alt="0027" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0028.gif" alt="0028" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0029.gif" alt="0029" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0030.gif" alt="0030" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0031.gif" alt="0031" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0032.gif" alt="0032" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0033.gif" alt="0033" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+                            <div class="col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-default btn-xs buttonEmoji  " type="button">
+                                    <img src="~/img/emoji/0034.gif" alt="0034" class="clsbuttonEmoji" />
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            @*@if (!ViewBag.IsChatOnline || ViewBag.AdminWithBet == true)
+                //{}*@
+
+
+
+
+
+
+
+
+
+
+
+            <div class="padded text-dark-space-bold text-center">
+                <div class="col-md-4 col-sm-12 text-white  hidden">
+                    Points: <span id="lblBalancePoints" class="well-bg-personalpoints padded"> @Model.BalancePoints.ToString("###,###") </span>
+                </div> <div class="col-md-4 col-sm-12 padded">
+                    @*<input type="text" value="" id="txtBetAmountZero" class="input-sm col-md-12  text-dark-space-bold small text-center" placeholder="ENTER AMOUNT" onkeypress="return isNumber(event)">*@
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-xs-10 col-sm-10 col-md-10 col-lg-12">
+                    <h5 id="betMessage"></h5>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-5 col-xs-12 bettingBgColor nopadding ">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12 text-center ">
+                    <div class="col-md-3 col-sm-3 col-xs-3 nopadding">
+                        <div class="col-md-12 text-center titleDarkBgLogout">
+                            <span>
+                                Points:
+                            </span>
+                        </div>
+                        <div class="col-md-12 text-center titleDarkBgAltLogout">
+                            <span id="lblTotalPointsDisplay">@Model.TotalPoints.ToString("###,###")</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-3 col-xs-3 nopadding">
+                        <div class="col-md-12 text-center titleDarkBgLogout">
+                            <span>
+                                Username
+                            </span>
+                        </div>
+                        <div class="col-md-12 text-center titleDarkBgAltLogout">
+                            <span class="text-custom-one ">@ViewBag.YourUsername</span>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-3 col-sm-3 col-xs-3 nopadding">
+                        <div class="col-md-12 text-center titleDarkBgLogout">
+                            <span>
+                                FIGHT#:
+                            </span>
+                        </div>
+                        <div class="col-md-12 text-center titleDarkBgAltLogout">
+                            <span id="lblGameInfoGameNumber" class="text-fightnumber">@Model.ArenaGameInfo.ArenaGame.GameNumber</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-3 col-xs-3 nopadding ">
+                        <div class="col-md-12 text-center titleDarkBgLogout">
+                            <span>
+                                STATUS:
+                            </span>
+                        </div>
+                        <div class="col-md-12 text-center titleDarkBgAltLogout">
+                            @if (@Model.ArenaGameInfo.ArenaGame.IsOpen)
+                            {
+                                <span class="text-light-space-bold ">
+                                    <span class="text-custom-one " data-name="open" id="lblStatus">OPEN</span>
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="text-custom-one">
+                                    <span class="text-custom-one" data-name="close" id="lblStatus">CLOSED</span>
+                                </span>
+                            }
+                        </div>
+
+
+                    </div>
+
+
+
+
+                </div>
+
+
+                <div class="col-md-12 col-sm-12 col-xs-12 text-center ">
+
+
+                    <div class="col-md-12 col-sm-12 col-xs-12  nopadding">
+                        <input type="text" value="" id="txtBetAmountZero" class="input-sm    text-dark-space-bold small text-center form-control" text-center" placeholder="ENTER AMOUNT" onkeypress="return isNumber(event)">
+
+                        <div class="col-md-12 col-sm-12 col-xs-12 text-center nopadding padded">
+
+                            <button class="btn  btn-sm btn-default btn-grayBet  " type="button" id="btnManual100" value="100" onclick="copyValueManual(this.value)">100</button>
+                            <button class="btn  btn-sm btn-default btn-grayBet  " type="button" id="btnManual500" value="500" onclick="copyValueManual(this.value)">500</button>
+                            <button class="btn  btn-sm btn-default btn-grayBet  " type="button" id="btnManual1000" value="1000" onclick="copyValueManual(this.value)">1k</button>
+                            <button class="btn  btn-sm btn-default btn-grayBet  " type="button" id="btnManual2000" value="2000" onclick="copyValueManual(this.value)">2k</button>
+                            <button class="btn  btn-sm btn-default btn-grayBet " type="button" id="btnManual5000" value="5000" onclick="copyValueManual(this.value)">5k</button>
+                            <button class="btn  btn-sm btn-default btn-grayBet  " type="button" id="btnManual10000" value="10000" onclick="copyValueManual(this.value)">10k</button>
+                            <button class="btn  btn-sm btn-danger  btn-redBet  " type="button" id="btnManualAllIn" value="ALL" onclick="copyValueManual(this.value)">ALL-IN</button>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-xs-12 text-center nopadding">
+                        @if (Model.Arena.MeronRightSide)
+                        {
+                            <table class="table text-dark  table-responsive borderless " id="tblPesonalBets">
+                                @if (Model.Arena.IsAutoBet.HasValue)
+                                {
+                                    <thead class="text-center">
+                                        <tr class="titlePlaceHolder">
+
+                                            <th class="wala-background-gradient text-center ">
+                                                wala
+                                            </th>
+                                            <th class="wala-background-gradient text-center hidden ">
+                                                matched
+                                            </th>
+                                            <th class="wala-background-gradient text-center ">
+                                                total
+                                            </th>
+                                            <th class="well-bg-dark  text-center hidden">
+                                                odds
+                                            </th>
+
+                                            <th class="meron-background-gradient text-center ">
+                                                total
+                                            </th>
+                                            <th class="meron-background-gradient hidden  text-center ">
+                                                matched
+                                            </th>
+                                            <th class="meron-background-gradient text-center ">
+                                                meron
+                                            </th>
+
+                                        </tr>
+                                    </thead>
+
+
+
+                                }
+                                else
+                                {
+                                    <thead class="text-center">
+                                        <tr>
+                                            <th class="walatext text-center padded" colspan="3">MY WALA BET</th>
+                                            <th class="well-bg-headtotal padded text-center" colspan="3">ALL BETS</th>
+                                            <th class="merontext text-center padded" colspan="3">MY MERON BET</th>
+                                        </tr>
+                                        <tr>
+                                            <th></th>
+                                            <th class="wala-background-gradient text-center ">
+                                                wala
+                                            </th>
+                                            <th class="wala-background-gradient text-center ">
+                                                matched
+                                            </th>
+                                            <th class="wala-background-gradient text-center ">
+                                                total
+                                            </th>
+
+                                            <th class="well-bg-dark  text-center ">
+                                                odds
+                                            </th>
+
+                                            <th class="meron-background-gradient text-center ">
+                                                total
+                                            </th>
+                                            <th class="meron-background-gradient  text-center ">
+                                                matched
+                                            </th>
+                                            <th class="meron-background-gradient text-center ">
+                                                meron
+                                            </th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                }
+
+
+
+                                <tbody class="text-right ">
+                                    @{ var classColor = "well-bg-bet-odd-dark"; }
+                                    @foreach (var item in Model.GameBets)
+                                    {
+                                        if (item.OddName != "DRAW")
+                                        {
+                                            if (Model.Arena.IsAutoBet.HasValue)
+                                            {
+                                                if (item.OddId == 1)
+                                                {
+
+                                                    <tr class="@classColor betPlaceHolder">
+
+                                                        <td>
+                                                            <span id="tdPersonalBetWala-@item.OddId">
+                                                                @if (item.Wala.HasValue == true)
+                                                                {
+                                                                    @item.Wala.Value.ToString("###,###")
+                                                                }
+                                                            </span>
+                                                        </td>
+                                                        <td class="hidden">
+                                                            <span id="tdPersonalBetWalaMatched-@item.OddId">
+                                                                @if (item.WalaMatched.HasValue == true)
+                                                                {
+                                                                    @item.WalaMatched.Value.ToString("###,###.##")
+                                                                }
+                                                            </span>
+                                                        </td>
+
+                                                        <td class="well-bg-draw-dark-total">
+                                                            <span id="tdTotalBetWala-@item.OddId">
+                                                                @if (item.TotalWala.HasValue == true)
+                                                                {
+                                                                    @item.TotalWala.Value.ToString("###,###")
+                                                                }
+                                                            </span>
+                                                        </td>
+
+                                                        <td class="text-center oddtitle hidden">
+                                                            @{
+                                                                var str = item.OddName.Split('-');
+                                                                var val = str[1] + '-' + str[0];
+                                                            }
+                                                            @val
+                                                            <span id="tdPersonalOdd-@item.OddId" class="hidden">
+                                                                @item.OddName
+                                                            </span>
+                                                            <span id="tdPersonalOddId-@item.OddId" class="hidden">@item.OddId</span>
+                                                        </td>
+
+                                                        <td class="well-bg-draw-dark-total">
+                                                            <span id="tdTotalBetMeron-@item.OddId">
+                                                                @if (item.TotalMeron.HasValue == true)
+                                                                {@item.TotalMeron.Value.ToString("###,###")}
+                                                            </span>
+
+                                                        </td>
+
+                                                        <td class="hidden">
+                                                            <span id="tdPersonalBetMeronMatched-@item.OddId">
+                                                                @if (item.MeronMatched.HasValue == true)
+                                                                {@item.MeronMatched.Value.ToString("###,###.##")}
+                                                            </span>
+
+                                                        </td>
+
+                                                        <td>
+                                                            <span id="tdPersonalBetMeron-@item.OddId">
+                                                                @if (item.Meron.HasValue == true)
+                                                                {
+                                                                    @item.Meron.Value.ToString("###,###")
+                                                                }
+                                                            </span>
+                                                        </td>
+
+
+                                                    </tr>
+
+                                                    if (@classColor.Equals("well-bg-bet-odd-dark-alt"))
+                                                    {
+                                                        classColor = "well-bg-bet-odd-dark";
+                                                    }
+                                                    else
+                                                    {
+                                                        classColor = "well-bg-bet-odd-dark-alt";
+                                                    }
+                                                    <tr class="padded">
+                                                        <td class="merontext  text-bold text-center padded">Payout:</td>
+                                                        <td class="merontext  text-bold text-center padded"><span id="tdPayOutMeron"></span></td>
+                                                        @*<td ></td>*@
+                                                        <td class="walatext  text-bold text-center padded">Payout:</td>
+                                                        <td class="walatext  text-bold text-center padded"><span id="tdPayOutWala"></span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-center  " colspan="2">
+
+                                                            <button type="button" class="btn btn-danger    btn-responsive hidden" disabled="disabled" data-id="@item.OddId" data-name="C" id="btnCancelLeftBet-@item.OddId" value="CANCELBET" title="CANCEL BET @item.OddName">
+                                                                <i class="fa fa-minus-circle "></i>
+                                                            </button>
+
+                                                            <button type="button" class="btn btn-success   btn-sm " disabled="disabled" data-id="@item.OddId" data-name="W" id="btnWalaBet-@item.OddId" value="WALABET" title="WALA @item.OddName">
+                                                                <i class="fa fa-plus-circle  "></i> BET WALA
+                                                            </button>
+                                                        </td>
+
+                                                        <td class="text-center text-white noWrap" colspan="2">
+                                                            <button type="button" class="btn   btn-success    btn-sm " disabled="disabled" data-id="@item.OddId" data-name="M" id="btnMeronBet-@item.OddId" value="MERONBET" title="MERON @item.OddName">
+                                                                <i class="fa fa-plus-circle  "></i> BET MERON
+                                                            </button>
+
+                                                            <button type="button" class="btn btn-danger   btn-responsive hidden" disabled="disabled" data-id="@item.OddId" data-name="C" id="btnCancelaBet-@item.OddId" value="CANCELBET" title="CANCEL BET @item.OddName">
+                                                                <i class="fa fa-minus-circle"></i>
+                                                            </button>
+
+
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                            }
+                                            else
+                                            {
+
+
+                                                <tr class="@classColor">
+                                                    <td class="text-center noWrap ">
+
+                                                        <button type="button" class="btn btn-danger    btn-responsive" disabled="disabled" data-id="@item.OddId" data-name="C" id="btnCancelLeftBet-@item.OddId" value="CANCELBET" title="CANCEL BET @item.OddName">
+                                                            <i class="fa fa-minus-circle "></i>
+                                                        </button>
+
+                                                        <button type="button" class="btn btn-primary   btn-responsive " disabled="disabled" data-id="@item.OddId" data-name="W" id="btnWalaBet-@item.OddId" value="WALABET" title="WALA @item.OddName">
+                                                            <i class="fa fa-plus-circle  "></i>
+                                                        </button>
+                                                    </td>
+                                                    <td>
+                                                        <span id="tdPersonalBetWala-@item.OddId">
+                                                            @if (item.Wala.HasValue == true)
+                                                            {
+                                                                @item.Wala.Value.ToString("###,###")
+                                                            }
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span id="tdPersonalBetWalaMatched-@item.OddId">
+                                                            @if (item.WalaMatched.HasValue == true)
+                                                            {
+                                                                @item.WalaMatched.Value.ToString("###,###")
+                                                            }
+                                                        </span>
+                                                    </td>
+
+                                                    <td class="well-bg-draw-dark-total">
+                                                        <span id="tdTotalBetWala-@item.OddId">
+                                                            @if (item.TotalWala.HasValue == true)
+                                                            {
+                                                                @item.TotalWala.Value.ToString("###,###")
+                                                            }
+                                                        </span>
+                                                    </td>
+
+                                                    <td class="text-center oddtitle">
+                                                        @{
+                                                            var str = item.OddName.Split('-');
+                                                            var val = str[1] + '-' + str[0];
+                                                        }
+                                                        @val
+                                                        <span id="tdPersonalOdd-@item.OddId" class="hidden">
+                                                            @item.OddName
+                                                        </span>
+                                                        <span id="tdPersonalOddId-@item.OddId" class="hidden">@item.OddId</span>
+                                                    </td>
+
+                                                    <td class="well-bg-draw-dark-total">
+                                                        <span id="tdTotalBetMeron-@item.OddId">
+                                                            @if (item.TotalMeron.HasValue == true)
+                                                            {@item.TotalMeron.Value.ToString("###,###")}
+                                                        </span>
+
+                                                    </td>
+
+                                                    <td>
+                                                        <span id="tdPersonalBetMeronMatched-@item.OddId">
+                                                            @if (item.MeronMatched.HasValue == true)
+                                                            {@item.MeronMatched.Value.ToString("###,###")}
+                                                        </span>
+
+                                                    </td>
+
+                                                    <td>
+                                                        <span id="tdPersonalBetMeron-@item.OddId">
+                                                            @if (item.Meron.HasValue == true)
+                                                            {
+                                                                @item.Meron.Value.ToString("###,###")
+                                                            }
+                                                        </span>
+                                                    </td>
+
+                                                    <td class="text-center text-white noWrap">
+                                                        <button type="button" class="btn   btn-primary    btn-responsive " disabled="disabled" data-id="@item.OddId" data-name="M" id="btnMeronBet-@item.OddId" value="MERONBET" title="MERON @item.OddName">
+                                                            <i class="fa fa-plus-circle  "></i>
+                                                        </button>
+
+                                                        <button type="button" class="btn btn-danger   btn-responsive " disabled="disabled" data-id="@item.OddId" data-name="C" id="btnCancelaBet-@item.OddId" value="CANCELBET" title="CANCEL BET @item.OddName">
+                                                            <i class="fa fa-minus-circle"></i>
+                                                        </button>
+
+
+                                                    </td>
+                                                </tr>
+
+                                                if (@classColor.Equals("well-bg-bet-odd-dark-alt"))
+                                                {
+                                                    classColor = "well-bg-bet-odd-dark";
+                                                }
+                                                else
+                                                {
+                                                    classColor = "well-bg-bet-odd-dark-alt";
+                                                }
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            <tr class="hidden">
+                                                <td class="well-bg-draw-dark-total text-left" colspan="2"><span class="padded text-capitalize text-custom-draw-bold">TOTAL DRAW:</span></td>
+                                                <td class="well-bg-draw-dark-total text-left" colspan="7">
+                                                    <span id="tdTotalBetDraw-@item.OddId" class="padded text-capitalize text-custom-draw-bold">
+                                                        @if (@item.TotalDraw.HasValue)
+                                                        {
+                                                            @item.TotalDraw.Value.ToString("###,###")
+                                                        }
+                                                    </span>
+                                                </td>
+                                            </tr>
+
+                                            <tr class="hidden">
+                                                <td class="well-bg-draw-dark-total text-left" colspan="2"><span class="padded text-capitalize text-custom-draw-bold">DRAW (1-8):</span></td>
+                                                <td class="well-bg-draw-dark text-left" colspan="9">
+                                                    <span id="tdPersonalBetDraw-@Model.DefaultDrawId" class="padded text-capitalize text-custom-draw-bold text-left">
+                                                        @if (@item.Draw.HasValue)
+                                                        {
+                                                            @item.Draw.Value.ToString("###,###")
+                                                        }
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+
+                                </tbody>
+                                <tfoot>
+                                    <tr class="hidden">
+                                        <td colspan="9">
+
+
+                                            <button type="button" class="well-bg-draw btn-sm" data-id="@Model.DefaultDrawId" data-name="D" id="btnDrawBet" value="DRAW" title="DRAW">
+                                                <i class="fa fa-plus-circle"> DRAW</i>
+                                            </button>
+                                            <button type="button" class="well-bg-meron  btn-sm " data-id="@Model.DefaultDrawId" data-name="C" id="btnDrawBetCancel" value="DRAWCancel" title="DRAWCancel">
+                                                <i class="fa fa-minus-circle"> CANCEL</i>
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                </tfoot>
+                            </table>
+                        }
+                        else
+                        {
+                            <table class="table text-dark  table-responsive borderless" id="tblPesonalBets">
+
+
+                                @if (Model.Arena.IsAutoBet.HasValue)
+                                {
+                                    <thead class="text-center ">
+                                        <tr class="titlePlaceHolder">
+
+                                            <th class="meron-background-gradient text-center ">
+                                                meron
+                                            </th>
+                                            <th class="meron-background-gradient text-center hidden ">
+                                                matched
+                                            </th>
+                                            <th class="meron-background-gradient text-center ">
+                                                total
+                                            </th>
+                                            <th class="well-bg-dark  text-center hidden">
+                                                odds
+                                            </th>
+
+                                            <th class="wala-background-gradient text-center ">
+                                                total
+                                            </th>
+                                            <th class="wala-background-gradient text-center hidden">
+                                                matched
+                                            </th>
+                                            <th class="wala-background-gradient text-center ">
+                                                wala
+                                            </th>
+
+                                        </tr>
+                                    </thead>
+                                }
+                                else
+                                {
+                                    <thead class="text-center">
+                                        <tr>
+                                            <th class="merontext text-center padded" colspan="3">MY MERON BET</th>
+                                            <th class="well-bg-headtotal padded text-center" colspan="3">ALL BETS</th>
+                                            <th class="walatext text-center padded" colspan="3">MY WALA BET</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="meron-background-gradient"></th>
+                                            <th class="meron-background-gradient text-center ">
+                                                meron
+                                            </th>
+                                            <th class="meron-background-gradient text-center ">
+                                                matched
+                                            </th>
+                                            <th class="meron-background-gradient text-center ">
+                                                total
+                                            </th>
+                                            <th class="well-bg-dark  text-center ">
+                                                odds
+                                            </th>
+                                            <th class="wala-background-gradient text-center ">
+                                                total
+                                            </th>
+                                            <th class="wala-background-gradient text-center ">
+                                                matched
+                                            </th>
+                                            <th class="wala-background-gradient text-center ">
+                                                wala
+                                            </th>
+                                            <th class="wala-background-gradient"></th>
+                                        </tr>
+                                    </thead>
+
+                                }
+
+
+
+
+
+
+                                <tbody class="text-right ">
+                                    @{ var classColor = "well-bg-bet-odd-dark"; }
+                                    @foreach (var item in Model.GameBets)
+                                    {
+
+                                        if (item.OddName != "DRAW")
+                                        {
+                                            if (Model.Arena.IsAutoBet.HasValue)
+                                            {
+                                                if (item.OddId == 1)
+                                                {
+                                                    <tr class="@classColor betPlaceHolder">
+
+                                                        <td>
+                                                            <span id="tdPersonalBetMeron-@item.OddId">
+                                                                @if (item.Meron.HasValue == true)
+                                                                {
+                                                                    @item.Meron.Value.ToString("###,###")
+                                                                }
+                                                            </span>
+                                                        </td>
+
+                                                        <td class="hidden">
+                                                            <span id="tdPersonalBetMeronMatched-@item.OddId">
+                                                                @if (item.MeronMatched.HasValue == true)
+                                                                {@item.MeronMatched.Value.ToString("###,###.##")}
+                                                            </span>
+
+                                                        </td>
+                                                        <td class="well-bg-draw-dark-total ">
+                                                            <span id="tdTotalBetMeron-@item.OddId">
+                                                                @if (item.TotalMeron.HasValue == true)
+                                                                {@item.TotalMeron.Value.ToString("###,###")}
+                                                            </span>
+
+                                                        </td>
+                                                        <td class=" text-center oddtitle hidden">
+                                                            @item.OddName
+                                                            <span id="tdPersonalOdd-@item.OddId" class="hidden">
+                                                                @item.OddName
+                                                            </span>
+                                                            <span id="tdPersonalOddId-@item.OddId" class="hidden">@item.OddId</span>
+                                                        </td>
+                                                        <td class="well-bg-draw-dark-total">
+                                                            <span id="tdTotalBetWala-@item.OddId">
+                                                                @if (item.TotalWala.HasValue == true)
+                                                                {
+                                                                    @item.TotalWala.Value.ToString("###,###")
+                                                                }
+                                                            </span>
+                                                        </td>
+                                                        <td class="hidden">
+                                                            <span id="tdPersonalBetWalaMatched-@item.OddId">
+                                                                @if (item.WalaMatched.HasValue == true)
+                                                                {
+                                                                    @item.WalaMatched.Value.ToString("###,###.##")
+                                                                }
+                                                            </span>
+                                                        </td>
+
+                                                        <td>
+                                                            <span id="tdPersonalBetWala-@item.OddId">
+                                                                @if (item.Wala.HasValue == true)
+                                                                {
+                                                                    @item.Wala.Value.ToString("###,###")
+                                                                }
+                                                            </span>
+                                                        </td>
+
+                                                    </tr>
+                                                    if (@classColor.Equals("well-bg-bet-odd-dark-alt"))
+                                                    {
+                                                        classColor = "well-bg-bet-odd-dark";
+                                                    }
+                                                    else
+                                                    {
+                                                        classColor = "well-bg-bet-odd-dark-alt";
+                                                    }
+                                                    <tr class="padded">
+                                                        <td class="merontext text-center  text-bold padded">Payout:</td>
+                                                        <td class="merontext text-center  text-bold padded"><span id="tdPayOutMeron"></span></td>
+                                                        @*<td colspan="2"></td>*@
+                                                        <td class="walatext text-center text-bold padded">Payout:</td>
+                                                        <td class="walatext text-center  text-bold padded"><span id="tdPayOutWala"></span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-center " colspan="2">
+                                                            <button type="button" class="btn btn-danger   btn-responsive hidden" disabled="disabled" data-id="@item.OddId" data-name="C" id="btnCancelLeftBet-@item.OddId" value="CANCELBET" title="CANCEL BET @item.OddName">
+                                                                <i class="fa fa-minus-circle "></i>
+                                                            </button>
+                                                            <button type="button" class="btn  btn-success  btn-responsive " disabled="disabled" data-id="@item.OddId" data-name="M" id="btnMeronBet-@item.OddId" value="MERONBET" title="MERON @item.OddName">
+                                                                <i class="fa fa-plus-circle  "></i> BET MERON
+                                                            </button>
+                                                        </td>
+
+                                                        <td class="text-center text-white  " colspan="2">
+                                                            <button type="button" class="btn  btn-success  btn-responsive " disabled="disabled" data-id="@item.OddId" data-name="W" id="btnWalaBet-@item.OddId" value="WALABET" title="WALA @item.OddName">
+                                                                <i class="fa fa-plus-circle  "></i> BET WALA
+                                                            </button>
+                                                            <button type="button" class="btn  btn-danger   btn-responsive hidden " disabled="disabled" data-id="@item.OddId" data-name="C" id="btnCancelaBet-@item.OddId" value="CANCELBET" title="CANCEL BET @item.OddName">
+                                                                <i class="fa fa-minus-circle "></i>
+                                                            </button>
+
+
+                                                        </td>
+                                                    </tr>
+                                                }
+
+
+                                            }
+                                            else
+                                            {
+
+                                                <tr class="@classColor">
+                                                    <td class="text-center  noWrap">
+                                                        <button type="button" class="btn btn-danger   btn-responsive " disabled="disabled" data-id="@item.OddId" data-name="C" id="btnCancelLeftBet-@item.OddId" value="CANCELBET" title="CANCEL BET @item.OddName">
+                                                            <i class="fa fa-minus-circle "></i>
+                                                        </button>
+                                                        <button type="button" class="btn  btn-primary  btn-responsive " disabled="disabled" data-id="@item.OddId" data-name="M" id="btnMeronBet-@item.OddId" value="MERONBET" title="MERON @item.OddName">
+                                                            <i class="fa fa-plus-circle  "></i>
+                                                        </button>
+                                                    </td>
+                                                    <td>
+                                                        <span id="tdPersonalBetMeron-@item.OddId">
+                                                            @if (item.Meron.HasValue == true)
+                                                            {
+                                                                @item.Meron.Value.ToString("###,###")
+                                                            }
+                                                        </span>
+                                                    </td>
+
+                                                    <td>
+                                                        <span id="tdPersonalBetMeronMatched-@item.OddId">
+                                                            @if (item.MeronMatched.HasValue == true)
+                                                            {@item.MeronMatched.Value.ToString("###,###")}
+                                                        </span>
+
+                                                    </td>
+                                                    <td class="well-bg-draw-dark-total">
+                                                        <span id="tdTotalBetMeron-@item.OddId">
+                                                            @if (item.TotalMeron.HasValue == true)
+                                                            {@item.TotalMeron.Value.ToString("###,###")}
+                                                        </span>
+
+                                                    </td>
+                                                    <td class=" text-center oddtitle">
+                                                        @item.OddName
+                                                        <span id="tdPersonalOdd-@item.OddId" class="hidden">
+                                                            @item.OddName
+                                                        </span>
+                                                        <span id="tdPersonalOddId-@item.OddId" class="hidden">@item.OddId</span>
+                                                    </td>
+                                                    <td class="well-bg-draw-dark-total">
+                                                        <span id="tdTotalBetWala-@item.OddId">
+                                                            @if (item.TotalWala.HasValue == true)
+                                                            {
+                                                                @item.TotalWala.Value.ToString("###,###")
+                                                            }
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span id="tdPersonalBetWalaMatched-@item.OddId">
+                                                            @if (item.WalaMatched.HasValue == true)
+                                                            {
+                                                                @item.WalaMatched.Value.ToString("###,###")
+                                                            }
+                                                        </span>
+                                                    </td>
+
+                                                    <td>
+                                                        <span id="tdPersonalBetWala-@item.OddId">
+                                                            @if (item.Wala.HasValue == true)
+                                                            {
+                                                                @item.Wala.Value.ToString("###,###")
+                                                            }
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-center text-white noWrap ">
+                                                        <button type="button" class="btn  btn-primary  btn-responsive " disabled="disabled" data-id="@item.OddId" data-name="W" id="btnWalaBet-@item.OddId" value="WALABET" title="WALA @item.OddName">
+                                                            <i class="fa fa-plus-circle  "></i>
+                                                        </button>
+                                                        <button type="button" class="btn  btn-danger   btn-responsive " disabled="disabled" data-id="@item.OddId" data-name="C" id="btnCancelaBet-@item.OddId" value="CANCELBET" title="CANCEL BET @item.OddName">
+                                                            <i class="fa fa-minus-circle "></i>
+                                                        </button>
+
+
+                                                    </td>
+                                                </tr>
+                                                if (@classColor.Equals("well-bg-bet-odd-dark-alt"))
+                                                {
+                                                    classColor = "well-bg-bet-odd-dark";
+                                                }
+                                                else
+                                                {
+                                                    classColor = "well-bg-bet-odd-dark-alt";
+                                                }
+                                            }
+                                        }
+
+                                        else
+                                        {
+                                            <tr class="hidden">
+                                                <td class="well-bg-draw-dark-total text-left" colspan="4"><span class="padded text-capitalize text-custom-draw-bold">TOTAL DRAW:</span></td>
+                                                <td class="well-bg-draw-dark-total text-left" colspan="5">
+                                                    <span id="tdTotalBetDraw-@item.OddId" class="padded text-capitalize text-custom-draw-bold">
+                                                        @if (@item.TotalDraw.HasValue)
+                                                        {
+                                                            @item.TotalDraw.Value.ToString("###,###")
+                                                        }
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr class="hidden">
+                                                <td class="well-bg-draw-dark-total text-left" colspan="4"><span class="padded text-capitalize text-custom-draw-bold">DRAW (1-8):</span></td>
+                                                <td class="well-bg-draw-dark text-left" colspan="5">
+                                                    <span id="tdPersonalBetDraw-@Model.DefaultDrawId" class="padded text-capitalize text-custom-draw-bold text-left">
+
+                                                        @if (@item.Draw.HasValue)
+                                                        {
+                                                            @item.Draw.Value.ToString("###,###")
+                                                        }
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+
+                                </tbody>
+                                <tfoot>
+                                    <tr class="hidden">
+                                        <td colspan="9">
+
+                                            <button type="button" class="well-bg-draw btn-sm" data-id="@Model.DefaultDrawId" data-name="D" id="btnDrawBet" value="DRAW" title="DRAW">
+                                                <i class="fa fa-plus-circle"> DRAW</i>
+                                            </button>
+                                            <button type="button" class="well-bg-meron  btn-redBet btn-sm " data-id="@Model.DefaultDrawId" data-name="C" id="btnDrawBetCancel" value="DRAWCancel" title="DRAWCancel">
+                                                <i class="fa fa-minus-circle"> CANCEL</i>
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                </tfoot>
+                            </table>
+                        }
+
+
+
+                    </div>
+
+                </div>
+
+                @if (ViewBag.WithAdminConsole)
+                {
+                    if (ViewBag.IsChatOnline)
+                    {
+                        if (!ViewBag.IsSubAdminViewer)
+                        {
+                            if (!ViewBag.NoAdminConsole)
+                            {
+                                <div class="col-md-12 col-sm-12 col-xs-12 text-center ">
+                                    <div class="panel panel-black">
+                                        <div class="panel-heading text-left">
+                                            <span><i class="ion ion-wand fa-fw"></i>Admin Console</span>
+                                        </div>
+                                        <div class="panel-body alert-muted fixed-panel-result small">
+                                            <div class="col-md-9 col-sm-9 col-xs-9 text-center ">
+                                                <div class="row">
+
+
+                                                    <h4 id="pendingPoints" class="alert-danger blink_me">
+                                                        @{ string fightMessage = "";}
+                                                        @if (!string.IsNullOrEmpty(@Model.PendingPoints))
+                                                        {
+                                                            fightMessage = "re-declare fight: " + Model.PendingPoints;
+                                                        }
+
+                                                        @fightMessage
+
+                                                    </h4>
+
+                                                </div>
+                                                <div class="row ">
+                                                    <h5 class="text-white text-left">Betting Status: <span class="text-red" id="lblAdminBettingStatus"></span> </h5>
+                                                    <button type="button" class="btn btn-primary btn-sm" id="btnGameOpen" value="OPEN" title="OPEN"><i class="ion ion-ios-checkmark-outline fa-fw"></i>OPEN</button>
+                                                    <button type="button" class="btn btn-danger btn-sm" id="btnGameClose" value="CLOSE" title="CLOSE"><i class="ion ion-ios-close-outline  fa-fw"></i>CLOSE</button>
+                                                </div>
+                                                <div class="row">
+                                                    <h5 class="text-white text-left">Declare Result: <span class="text-red" id="lblAdminDeclareResult"></span></h5>
+                                                    <button type="button" class="btn well-bg-meron btn-sm" data-name="M" id="btnDeclareMeron" value="MERON" title="MERON">MERON</button>
+                                                    <button type="button" class="btn well-bg-wala btn-sm" data-name="W" id="btnDeclareWala" value="WALA" title="WALA">WALA</button>
+                                                    <button type="button" class="btn well-bg-draw btn-sm" data-name="D" id="btnDeclareDraw" value="DRAW" title="DRAW">DRAW</button>
+                                                    <button type="button" class="btn well-bg-cancel btn-sm" data-name="C" id="btnDeclareCancel" value="CANCEL" title="CANCEL">CANCEL</button>
+                                                    <div class="form-group-lg text-white padded">
+                                                        <input type="radio" checked="" value="B" id="rbLD" name="rbLlamadoDehado">Balikatan
+                                                        <input type="radio" value="L" id="rbLlamado" name="rbLlamadoDehado">Llamado
+                                                        <input type="radio" value="D" id="rbDehado" name="rbLlamadoDehado">Dehado
+                                                    </div>
+                                                </div>
+                                                <div class="row ">
+                                                    <h5 class="text-white text-left">Next Fight: <span class="text-red" id="lblAdminNexFight"></span></h5>
+
+                                                    <button type="button" class="btn btn-primary btn-sm" data-name="R" id="btnResetAll" value="ResetAll" title="GoNext">Reset All</button>
+
+                                                    <button type="button" class="btn btn-success btn-sm" data-name="M" id="btnGoNext" value="GoNext" title="GoNext">GO NEXT</button>
+
+                                                    <button type="button" class="btn btn-warning btn-sm" id="btnReOpen" value="REOPEN" title="REOPEN"><i class="ion ion-ios-close-outline  fa-fw"></i>Re-Open</button>
+                                                </div>
+                                                <div class="row ">
+                                                    <h5 class="text-white text-left">Refresh: <span class="text-red" id="lblAdminNexFight"></span></h5>
+
+
+
+                                                    <button type="button" class="btn btn-success btn-sm" id="btnManualClose" value="MANUAL" title="MANUAL">MANUAL CLOSE</button>
+                                                    <button type="button" class="btn btn-info btn-sm" data-name="RA" id="btnRefreshAll" value="RefreshAll" title="Refresh All">Refresh Users</button>
+                                                    <button type="button" class="btn btn-custom-two btn-sm" data-name="MB" id="btnMatchBet" value="MatchBet" title="Match Bet">Match Bet</button>
+                                                </div>
+                                                <div class="row">
+                                                    <h4 id="adminMessage" class="alert-danger"></h4>
+                                                </div>
+
+                                            </div>
+                                            <div class="col-md-3 col-sm-3 col-xs-3 text-center nopadding">
+                                                <button class="btn  btn-sm btn-primary col-sm-12  col-md-12   btn-bluePersonal" type="button" id="btnSORefresh" value="SORefresh" title="REFRESH MAY VIDEO TAYU MGA KaBEST">REFRESH MAY VIDEO TAYU</button>
+                                                <button class="btn  btn-sm btn-primary col-sm-12  col-md-12  btn-bluePersonal" type="button" id="btnSOLastCall" value="SOLastCall" title="LAST CALL TO PLACE YOUR BET">LAST CALL TO PLACE YOUR BET</button>
+                                                <button class="btn  btn-sm btn-primary col-sm-12  col-md-12  btn-bluePersonal" type="button" id="btnSOVideo" value="SOVideo" title="CLOSED BETTING.. PANTAY.. KATALO PO.. GOODLUCK PO">CLOSED BETTING.. PANTAY.. KATALO PO.. GOODLUCK PO</button>
+
+                                                <button class="btn  btn-sm btn-primary col-sm-12  col-md-12   btn-bluePersonal" type="button" id="btnSOLMeron" value="SOLMeron" title="SIPAT KILATIS DISKARTE NA PO MGA BOSSING">SIPAT KILATIS DISKARTE NA PO MGA BOSSING</button>
+                                                <button class="btn  btn-sm btn-primary col-sm-12  col-md-12   btn-bluePersonal" type="button" id="btnSOLWala" value="LMeron" title=">TAYA TAYA NA PO SA GAWING MERON AT WALA">TAYA TAYA NA PO SA GAWING MERON AT WALA</button>
+                                                <button class="btn  btn-sm btn-primary col-sm-12  col-md-12  btn-bluePersonal" type="button" id="btnSOBalikatan" value="SOBalikatan" title="KASAHAN TAPATAN TAYA TAYA NA MGA BOSSING">KASAHAN TAPATAN TAYA TAYA NA MGA BOSSING</button>
+                                                <button class="btn  btn-sm btn-primary col-sm-12  col-md-12   btn-bluePersonal" type="button" id="btnSOParehasan" value="SOParehasan" title="SA DRAW PO MGA BOSSING WAG KALIMUTAN X8 PO YAN">SA DRAW PO MGA BOSSING WAG KALIMUTAN X8 PO YAN</button>
+
+
+
+                                                <button class="btn  btn-sm btn-primary col-sm-12  col-md-12   btn-bluePersonal" type="button" id="btnSOLodyes" value="SOLodyes" title="PLAYER (WALA) ------------- (MERON) BANKER">PLAYER (WALA) ------------- (MERON) BANKER</button>
+                                                <button class="btn  btn-sm btn-primary  col-sm-12  col-md-12  btn-bluePersonal" type="button" id="btnSOPusyam" value="SOPusyam" title=" BANKER(MERON) ------------- (WALA) PLAYER"> BANKER(MERON) ------------- (WALA) PLAYER</button>
+                                                <button class="btn  btn-sm btn-primary col-sm-12  col-md-12   btn-bluePersonal" type="button" id="btnSOOnse" value="SOOnse" title="PLAYER & BANKER STANDS AT 6&7(GOOD), JACKPOT AT 8&9 HITS
+ AT 5 AND BELOW.">
+                                                    PLAYER & BANKER STANDS AT 6&7(GOOD), JACKPOT AT 8&9 HITS AT 5 AND BELOW.
+                                                </button>
+
+
+
+
+
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+
+
+
+                                </div>
+                            }
+                        }
+                    }
+                }
+
+                @*<div class="row ">
+                        <div class="col-lg-1 col-md-1"> </div>
+                        <div class="col-lg-11 col-md-11">
+                            <p class="small"><span class="text-custom-one-line">RULE # 1 :</span>  NAWALA ANG VIDEO AFTER NAG CLOSE ANG BETTING STATUS <span class="well-bg-meron">** KATALO : TULOY ANG LABAN **</span></p>
+                            <p class="small"><span class="text-custom-one-line">RULE # 2 :</span> NAWALA ANG VIDEO BEFORE NAG CLOSE ANG BETTING STATUS <span class="well-bg-meron">** CANCEL FIGHT ** </span></p>
+                            <p class="small"><span class="text-custom-one-line">RULE # 3 :</span> HINDI NAG CLOSE ANG BETTING STATUS or HINDI NAGPANTAY ANG TAYA BEFORE MAGSALPUKAN ANG MGA MANOK <span class="well-bg-meron">** CANCEL FIGHT **</span></p>
+                        </div>
+                    </div>*@
+            </div>
+
+        </div>
+
+
+
+
+
+
+        <div class="col-md-1 col-xs-12 bettingBgColor hidden ">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12 text-center nopadding">
+                    <div class="row text-center">
+                        <span id="lblWinnerFight" class="text-custom-one"></span>
+                    </div>
+
+                    <div id="serverDate" class="hidden">@ViewBag.CurrentDateTime</div>
+                    <div class="clock small">
+                        <ul>
+                            <li>@ViewBag.CurrentDateTime.ToString("ddd MM/dd/yyyy")</li>
+                        </ul>
+                        <ul>
+                            <li id="hours"></li>
+                        </ul>
+                    </div>
+                    <div class="panel panel-default ">
+                        <div class="panel-body  fixed-panel-result-dark alert-muted ">
+                            <img src="~/img/ec-logo-sm.png" class="img-responsive center-block  verticalAlign" />
+
+                            <div class="row text-center ">
+
+                                @if (@Model.GameResults != null)
+                                {
+                                    <p class="well-bg-meron small"> <strong>M:</strong> <span id="lblResultMeron">@Model.GameResults.TotalMeron</span> </p>
+                                    <p class="well-bg-wala small"> <strong>W:</strong><span id="lblResultWala">@Model.GameResults.TotalWala</span> </p>
+                                    <p class="well-bg-draw small"> <strong>D:</strong> <span id="lblResultDraw">@Model.GameResults.TotalDraw</span></p>
+                                    <p class="well-bg-cancel small"> <strong>C:</strong> <span id="lblResultCancel">@Model.GameResults.TotalCancel</span></p>
+                                }
+                                else
+                                {
+                                    <p class="well-bg-meron small"> <strong>M:</strong> <span id="lblResultMeron">0</span> </p>
+                                    <p class="well-bg-wala small"> <strong>W:</strong><span id="lblResultWala">0</span> </p>
+                                    <p class="well-bg-draw small"> <strong>D:</strong> <span id="lblResultDraw">0</span></p>
+                                    <p class="well-bg-cancel small"> <strong>C:</strong> <span id="lblResultCancel">0</span></p>
+                                }
+                            </div>
+                            <div class="row text-center ">
+                                <table class="table table-bordered text-dark small table-responsive" id="tblResult">
+                                    <tbody>
+
+                                        @if (Request.QueryString["v"] == null)
+                                        {
+                                            foreach (var item in Model.FightResults)
+                                            {
+                                                string subClassName = string.Empty;
+                                                string llamadoClassname = string.Empty;
+                                                if (item.Result == "M")
+                                                {
+                                                    subClassName = "meron";
+                                                }
+                                                if (item.Result == "W")
+                                                {
+                                                    subClassName = "wala";
+                                                }
+                                                if (item.Result == "D")
+                                                {
+                                                    subClassName = "draw";
+                                                }
+
+                                                if (item.Result == "C")
+                                                {
+                                                    subClassName = "cancel";
+                                                }
+
+                                                if (item.LLamadoDehado == "L")
+                                                {
+                                                    llamadoClassname = "well-bg-meron-odd";
+                                                }
+
+                                                if (item.LLamadoDehado == "D")
+                                                {
+                                                    llamadoClassname = "well-bg-wala-odd";
+                                                }
+
+                                                if (item.LLamadoDehado == "B")
+                                                {
+                                                    llamadoClassname = "well-bg-cancel";
+                                                }
+                                                if (item.LLamadoDehado == "-")
+                                                {
+                                                    llamadoClassname = "well-bg-cancel";
+                                                }
+                                                <tr>
+                                                    <td class="well-bg-@subClassName"> <span> @item.GameNumber </span></td>
+                                                    <td class="well-bg-@subClassName"> @item.Result </td>
+                                                    <td class="@llamadoClassname"> @item.LLamadoDehado </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input id="hdId" type="hidden" />
+<input id="hdGameInfoResult" type="hidden" />
+<input id="hdGameInfoResultLlmadoDehado" type="hidden" />
+@Html.Hidden("usernameId", @Model.CurrrentUsername, new { id = "usernameId" })
+@Html.Hidden("hdUserId", @Model.CurrrentUserId, new { id = "hdUserId" })
+@Html.Hidden("hdArenaGameID", @Model.ArenaGameInfo.ArenaGame.ArenaGameId, new { id = "hdArenaGameID" })
+@Html.Hidden("hdArenaId", @Model.ArenaGameInfo.ArenaGame.ArenaId, new { id = "hdArenaId" })
+@Html.Hidden("hdGameProgress", @Model.GameProgress, new { id = "hdGameProgress" })
+@Html.Hidden("hdChangeColor", @Model.ChangeColor, new { id = "hdChangeColor" })
+@Html.Hidden("hdPlasadaPercentagee", @Model.PlasadaPercentage, new { id = "hdPlasadaPercentage" })
+@Html.Hidden("hdCurrentNumber", @Model.CurrrentNumber, new { id = "hdCurrentNumber" })
+@Html.Hidden("hdBetType", @Model.Arena.IsAutoBet.HasValue ? @Model.Arena.IsAutoBet.Value : 0, new { id = "hdBetType" })
+
+
+
+

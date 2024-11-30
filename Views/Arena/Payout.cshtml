@@ -1,0 +1,309 @@
+﻿@model SabongPinoy.Models.DUserBets
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>eGameCashier.com - Payout</title>
+
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <link href="~/Content/styles.css" rel="stylesheet" />
+    <script>
+        $(function () {
+            $("#txtSearch").focus();
+        });
+
+        function clickToPrint() {
+            var ubetID = $("#uBetId").html();
+
+            $.ajax({
+                cache: false,
+                url: '/Arena/UpdateData',
+                data: { userBetId: ubetID },
+                dataType: "json",
+                type: "POST",
+                cache: false,
+                success: function (data) {
+                    if (data.success) {
+                        //alert(data.message);
+                        Popup($('#printThis').innerHTML);
+                        window.close();
+                    }
+                },
+                error: function (xhr) {
+                    alert(xhr.responseText);
+                }
+            });
+
+            Popup($('#printThis').html());
+
+            window.close();
+        }
+
+
+        function Popup(data) {
+
+            var myWindow = window.open('', 'PRINT', 'height=400,width=600');
+
+            myWindow.document.write('<html><head><title></title>');
+            myWindow.document.write('</head><body style="text-transform:uppercase;font-family: Verdana, Helvetica, sans-serif;font-size:12px;" >');
+            //myWindow.document.write(printContent.innerHTML);
+            myWindow.document.write(data);
+            myWindow.document.write('</body></html>');
+
+            myWindow.print();
+            myWindow.close();
+
+            return true;
+        }
+
+    </script>
+
+    <style type="text/css">
+        @@media print {
+            @@page {
+                size: 8.5in 11in;
+                padding: 0;
+                margin: 10%;
+            }
+
+            html, body {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                max-width: 100%;
+                max-height: 97%;
+                margin: 0;
+                padding: 0;
+                text-align: center;
+                font-family: Verdana, Helvetica, sans-serif;
+            }
+
+            svg {
+                width: 100%;
+                height: 100%;
+                max-width: 100%;
+                max-height: 100%;
+            }
+
+            table {
+                width: 100%;
+                height: 40vh;
+                table-layout: fixed;
+            }
+
+                table tr th {
+                    text-align: center;
+                    font-family: Tahoma;
+                    padding-left: 20px;
+                    padding-top: 10px;
+                    padding-right: 20px;
+                }
+
+                table tr td {
+                    text-align: left;
+                    font-size: 25px;
+                    text-transform: uppercase;
+                }
+
+                    table tr td.title {
+                        text-align: left;
+                        font-size: 25px;
+                        font-weight: bold;
+                        text-transform: uppercase;
+                    }
+
+            #printThis {
+                width: 900px;
+                background-color: #fff;
+                clear: both;
+                display: block;
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <br /><br />
+            <div class="col-md-12 col-sm-12 col-xs-12  ">
+                @using (Html.BeginForm("Payout", "Arena", FormMethod.Get))
+                {
+                    <div class="form-group input-group form-group-sm">
+                        <input type="text" name="SearchString" id="txtSearch" class="form-control" placeholder="BET ID">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-info btn-sm ">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                    </div>
+                }
+                @if (Model != null)
+                {
+            <div id="printThis" style="text-transform: uppercase; font-family: Verdana, Helvetica, sans-serif; font-size: 25px;text-align:left;">
+                <div class="col-md-12 text-left titleDarkBgAltLogout">
+                    <span>
+                        @Model.ArenaName
+                    </span>
+                </div>
+                <div class="col-md-12 text-left titleDarkBgAltLogout">
+                    <span>
+                        Bet Id:<span id="uBetId"> @Model.UserBetId</span>
+                    </span>
+                </div>
+                <div class="col-md-12 text-left titleDarkBgAltLogout">
+                    <span>
+                        Date:
+                    </span>
+                </div>
+                <div class="col-md-12 text-left titleDarkBgAltLogout">
+                    <span>
+                        @Model.LocalDateTime
+                    </span>
+                </div>
+                <div class="col-md-12 text-left titleDarkBgAltLogout">
+                    <span>
+                        Fight #: @Model.GameNumber
+                    </span>
+                </div>
+
+
+
+                @if (@Model.IsCancelDraw == 0)
+                {
+                    if (@ViewBag.IsAllowed)
+                    {
+
+                        <div class="col-md-12 text-left titleDarkBgAltLogout">
+                            <span>
+                                Bet On:
+                            </span> <span style="font-weight:bold;font-size:15px;">
+                                @Model.BetOn
+                            </span>
+                        </div>
+
+                        <div class="col-md-12 text-left titleDarkBgAltLogout">
+                            <span>
+                                Bet Amount:
+                            </span>    <span style="font-weight:bold;font-size:15px;">
+                                @Model.MatchedAmount.ToString("###,###,###.##")
+                            </span>
+                        </div>
+                   
+
+                        <div class="col-md-12 text-left titleDarkBgAltLogout">
+                            <span>
+                                Payout Amount:
+                            </span>     <span style="font-weight:bold;font-size:15px;">
+    @if (Model.BetOn == "DRAW")
+    {
+        @Model.Points.ToString("###,###,###.##")
+    }
+    else
+    {
+        @Model.Total.ToString("###,###.##")
+    }
+</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-12 text-left titleDarkBgAltLogout">
+                            <span style="color:#ffd800;font-size:15px;">
+                                PAYOUT TO @Model.Username
+                            </span>
+                        </div>
+                    }
+                }
+
+
+
+
+
+
+                else
+                {
+                    <div class="col-md-12 text-left titleDarkBgAltLogout">
+                        <span>
+                            Payout Amount: @Model.MatchedAmount.ToString("###,###,###.##") - CANCEL/DRAW
+                        </span>
+                    </div>
+
+                    if (!@ViewBag.IsAllowed)
+                    {
+                        <div class="col-md-12 text-left titleDarkBgAltLogout">
+                            <span style="color:#ffd800;font-size:15px;">
+                                PAYOUT TO @Model.Username
+                            </span>
+                        </div>
+                    }
+
+
+                }
+            </div>
+                    <div class="col-md-12 text-left titleDarkBgAltLogout">
+                        @if (Model.IsPaid)
+                        {
+                            <span>
+                                PAID: YES
+                            </span>
+                        }
+                        else
+                        {
+                            <span>
+                                PAID: NO
+                            </span>
+                        }
+
+                    </div>
+                    <div class="col-md-12 text-left padded">
+                        <span>
+                            @if (@ViewBag.IsAllowed)
+                            {
+
+                                if (@Model.IsPaid)
+                                {
+                                    <input type="submit" value="CLOSE" name="Close" onclick="window.close()" class="btn btn-warning " />
+                                }
+                                else
+                                {
+                                    <input type="submit" value="PAY AND PRINT" name="SaveGame" onclick="clickToPrint()" class="btn btn-primary col-md-6 col-sm-6 col-xs-6" />
+                                    <input type="submit" value="CLOSE" name="Close" onclick="window.close()" class="btn btn-warning col-md-6 col-sm-6 col-xs-6" />
+                                }
+
+                            }
+                            else
+                            {
+                                <input type="submit" value="CLOSE" name="Close" onclick="window.close()" class="btn btn-warning " />
+                            }
+
+                        </span>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-12 text-center titleDarkBgAltLogout">
+                    <span>
+                        Please scan the receipt.
+                    </span>
+                </div>
+                <div class="col-md-12 text-center padded">
+                    <span>
+                        <input type="submit" value="CLOSE" name="Close" onclick="window.close()" class="btn btn-warning " />
+                    </span>
+                </div>
+            }
+
+            </div>
+        </div>
+        </div>
+    </body>
+</html>

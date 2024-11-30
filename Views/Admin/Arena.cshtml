@@ -1,0 +1,129 @@
+﻿@model IQueryable<SabongPinoy.Models.v_Arenas>
+
+@{
+    ViewBag.Title = "Events";
+}
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 ">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-left">
+                            <span><i class="ion ion-ios-people fa-fw"></i>List of Events</span>
+                            <div class="pull-right">
+                                <div class="btn-group open">
+                                  <a href="@Url.Action("ArenaForm","Admin")" class="btn btn-success btn-xs"  title="Add New Event"><i class="ion ion-plus fa-fw"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="form-wrapper table-responsive">
+                                <div class="pull-right small col-lg-offset-9">
+                                    @using (Html.BeginForm("Arena", "Admin", FormMethod.Get))
+                                    {
+                                        <div class="form-group input-group form-group-sm">
+                                            <input type="text" name="SearchString" class="form-control" placeholder="search">
+                                            <span class="input-group-btn">
+                                                <button type="submit" class="btn btn-info btn-sm ">
+                                                    <i class="fa fa-search"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    }
+
+                                </div>
+                                <table class="table table-responsive table-striped table-hover  text-dark-space text-left small">
+                                    <thead class="text-center">
+                                        <tr>
+                                            <th>Event Name</th>
+                                            <th>Date Of Event</th>
+                                            <th>Location</th>
+                                            <th>OPEN</th>
+                                            <th>COMPLETE</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            var classOpen = "";
+                                            var openClose = "";
+                                            var icon = "";
+                                            var button = "";
+                                            if (item.IsOpen)
+                                            {
+                                                classOpen = "label-danger text-white text-center";
+                                                openClose = "Yes";
+                                            }
+                                            else
+                                            {
+                                                classOpen = "label-info text-white text-center";
+                                                openClose = "No";
+                                            }
+
+                                            if (@item.Redeclare == 1)
+                                            {
+                                                icon = "fa fa-check-circle";
+                                                button = "btn btn-primary";
+                                            }
+                                            else
+                                            {
+                                                icon = "fa fa-remove";
+                                                button = "btn btn-danger";
+                                            }
+
+                                            <tr>
+                                                <td class="fa fa-cro" >
+                                                    @item.ArenaName
+                                                </td>
+                                                <td>
+                                                    @item.DateOfFight.ToString("MM/dd/yyyy")
+                                                </td>
+                                                <td>
+                                                    @item.Location
+                                                </td>
+                                                <td class="@classOpen text-right">
+                                                    @openClose
+                                                </td>
+                                                <td class="text-right">
+                                                    <a class="@button"><i class="@icon"></i></a>
+                                                </td>
+                                                <td class="text-center">
+                                                    @Html.ActionLink("Edit", "ArenaForm", "Admin", new { aid = @item.ArenaId }, new { @class = "btn btn-primary btn-xs" })
+                                                    @Html.ActionLink("Games", "ArenaGames", "Admin", new { aid = @item.ArenaId, a = @Html.Raw(@item.ArenaName) }, new { @class = "btn btn-danger  btn-xs" })
+                                                    @*@Html.ActionLink("Names", "ArenaName", "Admin", new { aid = @item.ArenaId, a = @Html.Raw(@item.ArenaName) }, new { @class = "btn btn-success  btn-xs" })*@
+                                                    @Html.ActionLink("Preview", "Watch", "Arena", new { aid = @item.ArenaId }, new { @class = "btn btn-info  btn-xs" })
+                                                    @Html.ActionLink("Online", "ArenaOnline", "Admin", new { aid = @item.ArenaId, a = @Html.Raw(@item.ArenaName) }, new { @class = "btn btn-primary  btn-xs" })
+                                                    @Html.ActionLink("Bets", "ArenaBets", "Admin", new { aid = @item.ArenaId, a = @Html.Raw(@item.ArenaName) }, new { @class = "btn btn-warning  btn-xs" })
+                                                    @Html.ActionLink("Payout", "BetPayout", "Admin", new { aid = @item.ArenaId, a = @Html.Raw(@item.ArenaName) }, new { @class = "btn btn-success  btn-xs" })
+                                                    @Html.ActionLink("Reports", "ArenaReport", "Admin", new { aid = @item.ArenaId, a = @Html.Raw(@item.ArenaName) }, new { @class = "btn btn-info  btn-xs" })
+                                                    @Html.ActionLink("Pending", "ArenaPending", "Admin", new { aid = @item.ArenaId, a = @Html.Raw(@item.ArenaName) }, new { @class = "btn btn-danger  btn-xs" })
+                                                    @Html.ActionLink("Reprint", "Reprint", "Admin", new { aid = @item.ArenaId, a = @Html.Raw(@item.ArenaName) }, new { @class = "btn btn-success  btn-xs" })
+                                                    @Html.ActionLink("Counter", "GetCounter", "Admin", new { aid = @item.ArenaId }, new { @class = "btn btn-primary btn-xs" })
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+                                <ul class="pagination pagination-sm ">
+                                    @for (int p = 1; p <= ViewBag.TotalPage; p++)
+                                    {
+                                        <li class="@(p == ViewBag.CurrentPage ? "active" : " ")">
+                                            <a href="@Url.Action("Arena", "Admin", new { page = @p })"> @p </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div></div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

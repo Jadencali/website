@@ -1,0 +1,63 @@
+﻿@model IEnumerable<SabongPinoy.Models.CommissionPerFigts>
+@{
+    ViewBag.Title = "Report Details";
+}
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12  col-md-12 col-lg-10 col-lg-offset-1 ">
+                    <div class="panel panel-red">
+                        <div class="panel-heading text-left">
+                            <span><i class="ion ion-ios-people fa-fw"></i>Event Details - @ViewBag.ArenaName </span>
+                            <div class="pull-right">
+                                <div class="btn-group open">
+                                    <a class=" btn btn-default btn-xs" href="@Url.Action("AdminView", "Admin")" title="Go Back"><i class="ion ion-arrow-left-b fa-fw"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body table-responsive">
+
+                            <table class="table table-hover  text-dark-space text-left small">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th>Event</th>
+                                        <th>Fight #</th>
+                                        <th>Commision</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@ViewBag.ArenaName</td>
+                                            <td>@item.FightNumber</td>
+                                            <td>@item.Commision</td>
+                                           
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <!-- /.panel-body -->
+                        <ul class="pagination pagination-sm">
+                            @for (int p = 1; p <= ViewBag.TotalPage; p++)
+                            {
+                                <li class="@(p == ViewBag.CurrentPage ? "active" : " ")">
+                                    <a href="@Url.Action("AdminPerFight", "Admin", new { page = @p, aid = @Request.QueryString["aid"], a = @Request.QueryString["a"] })"> @p </a>
+                                </li>
+                            }
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

@@ -1,0 +1,205 @@
+﻿@model SabongPinoy.Models.CardDetailsViewModel
+
+@{
+    ViewBag.Title = "Events";
+}
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 ">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-left">
+                            <span><i class="ion ion-ios-people fa-fw"></i>Card Details</span>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="form-wrapper table-responsive text-center">
+
+                                @using (Html.BeginForm("CardInfo", "MySabong", FormMethod.Get))
+                                {
+                                    <div class="form-group input-group form-group-sm">
+                                        <input type="text" name="cardId" class="form-control" placeholder="search" autofocus>
+                                        <span class="input-group-btn">
+                                            <button type="submit" class="btn btn-info btn-sm ">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                }
+                                <h1 class="text-bold">CARD Balance: <span class="text-red"> @ViewBag.Balance.ToString("###,###,##0.00")</span></h1>
+                                <h2 class="text-bold">@Request.QueryString["cardId"]</h2>
+                                <hr />
+                                <div class="clearfix"></div>
+                                <div class="clearfix"></div>
+                                <div class="clearfix"></div>
+                                <div class="clearfix"></div>
+                                <div class="clearfix"></div>
+                                <div class="clearfix"></div>
+                                <table class="table table-striped table-hover text-dark-space text-left small">
+                                    <thead class="text-center">
+                                        <tr>
+                                            <th colspan="4">
+                                                <h4>Cashin/Cashout</h4>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th>Date Loaded</th>
+                                            <th>Loaded By</th>
+                                            <th>Points From</th>
+
+                                            <th>Points</th>
+                                            <th>Balance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.Points != null)
+                                        {
+                                            foreach (var item in Model.Points)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @item.UserPoint.DateLoaded
+                                                    </td>
+                                                    <td>
+                                                        @item.LoadedByUsername
+                                                    </td>
+                                                    <td>
+                                                        @item.UserPoint.LoadedFrom
+                                                    </td>
+                                                    @*<td>
+                                @item.UserPoint.PasaloadFrom
+                            </td>
+                            <td>
+                                @item.UserPoint.PasaloadTo
+                            </td>*@
+                                                    <td class="text-success text-right">
+                                                        @if (@item.UserPoint.Points < 0)
+                                                        {
+                                                            <span class="text-red">
+                                                                @item.UserPoint.Points.ToString("###,###.00")
+                                                            </span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="text-info">
+                                                                @item.UserPoint.Points.ToString("###,###.00")
+                                                            </span>
+                                                        }
+                                                    </td>
+
+                                                    <td>
+                                                        @if (@item.UserPoint.CurrentTotal.HasValue)
+                                                        {
+                                                            @item.UserPoint.CurrentTotal.Value.ToString("###,##0.00")
+                                                        }
+
+
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+
+                                <hr />
+                                <div class="clearfix"></div>
+                                <div class="clearfix"></div>
+                                <div class="clearfix"></div>
+                                <div class="clearfix"></div>
+                                <div class="clearfix"></div>
+                                <div class="clearfix"></div>
+
+                                <table class="table table-striped table-hover  text-dark-space text-left small">
+                                    <thead class="text-center">
+                                        <tr>
+                                            <th colspan="11">
+                                                <h4>Bettings</h4>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th>Bet Id</th>
+                                            <th>Fight #</th>
+                                            <th>Date</th>
+                                            <th>Winner</th>
+                                            <th>Bet on</th>
+                                            @*<th>Odd</th>*@
+                                            <th>Bet Amount</th>
+                                            <th>Matched</th>
+                                            <th>Winnings</th>
+                                            <th>Commision</th>
+                                            <th>Net</th>
+                                            <th>Balance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.Points != null)
+                                        {
+                                            foreach (var item in Model.Bets)
+                                            {
+                                                <tr>
+                                                    <td>@item.UserBetId</td>
+                                                    <td>@item.GameNumber</td>
+                                                    <td>@item.BetTimestamp</td>
+                                                    <td>@item.Result</td>
+                                                    <td>@item.Beton</td>
+                                                    @*<td>
+                                @if (ViewBag.MeronIsRightside)
+                                {
+                                    @item.OddNameRight(@item.OddName)
+                                }
+                                else
+                                {
+                                    @item.OddName
+                                }
+                            </td>*@
+                                                    <td>@item.Bet</td>
+                                                    <td>@item.MatchedAmount</td>
+                                                    <td>
+                                                        @if (item.Winnings.HasValue)
+                                                        {
+                                                            if (item.Winnings.Value > 0)
+                                                            {
+                                                                <span class="meronbackground">@item.Winnings</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="walabackground">@item.Winnings</span>
+                                                            }
+                                                        }
+
+
+                                                    </td>
+                                                    <td>@item.Commision</td>
+                                                    <td>
+                                                        @{decimal net = 0;}
+                                                        @if (item.Winnings.HasValue)
+                                                        {
+                                                            if (item.Winnings.Value > 0)
+                                                            {
+                                                                net = item.Winnings.Value - item.Commision.Value;
+                                                            }
+                                                        }
+                                                        @net
+                                                    </td>
+                                                    <td>
+                                                        @item.CurrentTotal
+                                                    </td>
+
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

@@ -1,0 +1,64 @@
+﻿@model SabongPinoy.Models.GameCorrectionViewModel
+
+@{
+    ViewBag.Title = "GameCorrection";
+}
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 ">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-left">
+                            <i class="ion-ios-people"></i>Correction >> Game Number - @Model.GameNumber [Winner = @Model.Result]
+                            <div class="pull-right">
+                                <div class="btn-group open">
+                                    <a class=" btn btn-default btn-xs" href="@Url.Action("ArenaGames", "Admin", new { agid = @Request.QueryString["agid"], aid = @Request.QueryString["aid"] })" title="Go Back"><i class="ion ion-arrow-left-b fa-fw"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="form-wrapper">
+                                <hr />
+                                @using (Html.BeginForm("GameCorrection", "Admin", new { agid = @Request.QueryString["agid"], aid = @Request.QueryString["aid"] }, FormMethod.Post, new { @class = "form-horizontal text-left" }))
+                                {
+                                    <div class="error-div small">
+                                        <p class="alert-danger"> @ViewBag.Message</p>
+                                    </div>
+                                    @Html.Hidden("ArenaId", @Model.ArenaId, new { id = "ArenaId" })
+                                    @Html.Hidden("ArenaGameId", @Model.ArenaGameId, new { id = "ArenaGameId" })
+                                    @Html.Hidden("Result", @Model.Result, new { id = "Result" })
+                                    @Html.Hidden("GameNumber", @Model.GameNumber, new { id = "GameNumber" })
+                                    
+                                    <h5 class="text-dark-mid text-left">Declare Result: <span class="text-red" id="lblAdminDeclareResult"></span></h5>
+                                    <button type="submit" name="submit" class="btn well-bg-meron btn-sm" data-name="M" id="btnDeclareMeron" value="M" title="MERON">MERON</button>
+                                    <button type="submit" name="submit" class="btn well-bg-wala btn-sm" data-name="W" id="btnDeclareWala" value="W" title="WALA">WALA</button>
+                                    <button type="submit" name="submit" class="btn well-bg-draw btn-sm" data-name="D" id="btnDeclareDraw" value="D" title="DRAW">DRAW</button>
+                                    <button type="submit" name="submit" class="btn well-bg-cancel btn-sm" data-name="C" id="btnDeclareCancel" value="C" title="CANCEL">CANCEL</button>
+
+
+    <button type="submit" name="submit" class="btn well-bg-darktitle btn-sm" data-name="J" id="btnDeclareCancel" value="J" title="START" onclick="return confirm('All fights will be cancelled and fight number will start here. Are you sure you want to submit this request?')">START FIGHT NUMBER</button>
+                                    <div class="form-group-lg text-dark padded">
+                                        <input type="radio" checked="" value="B" id="rbLD" name="rbLlamadoDehado">Balikatan
+                                        <input type="radio"  value="L" id="rbLlamado" name="rbLlamadoDehado">Llamado
+                                        <input type="radio" value="D" id="rbDehado" name="rbLlamadoDehado">Dehado
+                                    </div>
+                                    <br />
+                                    
+                                    <button type="submit" name="submit" class="btn well-bg-wala-odd btn-sm" data-name="X" id="btnMatchAll" value="X" title="MATCH">MATCH ALL</button>
+                                    
+                                     <button type="submit" name="submit" class="btn well-bg-meron-odd btn-sm" data-name="F" id="btnFix" value="F" title="Fix">FIX ERROR</button>
+                                }
+                            </div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

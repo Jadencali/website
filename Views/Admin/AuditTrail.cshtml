@@ -1,0 +1,175 @@
+﻿@model IQueryable<SabongPinoy.Models.AuditTrail>
+
+@{
+    ViewBag.Title = "Audit Trail";
+    <script type="text/javascript">
+        function printMe() {
+            window.print();
+        }
+    </script>
+}
+
+@helper buildLinks(int start, int end, string innerContent)
+{
+    for (int i = start; i <= end; i++)
+    {
+        @*<a class="@(i == ViewBag.CurrentPage ? "current" : "")" href="@Url.Action("products", "home", new { page = i })">@(innerContent ?? i.ToString())</a>*@
+        <li class="@(i == ViewBag.CurrentPage ? "active" : " ")">
+            <a href="@Url.Action("AuditTrail", "Admin", new { page = i, searchString = @ViewBag.SearchString })"> @(innerContent ?? i.ToString()) </a>
+        </li>
+    }
+
+}
+
+@helper pageLinks()
+{
+    const int maxPages = 11;
+
+    if (ViewBag.TotalPage <= maxPages)
+    {
+        @buildLinks(1, (int)ViewBag.TotalPage, null)
+        return;
+    }
+
+    int pagesAfter = ViewBag.TotalPage - ViewBag.CurrentPage; // Number of pages after current
+    int pagesBefore = ViewBag.CurrentPage - 1; // Number of pages before current
+
+    if (pagesAfter <= 4)
+    {
+        @buildLinks(1, 1, null) // Show 1st page
+
+        int pageSubset = ViewBag.TotalPage - maxPages - 1 > 1 ? ViewBag.TotalPage - maxPages - 1 : 2;
+        @buildLinks(pageSubset, pageSubset, "...") // Show page subset (...)
+
+                                                @buildLinks(ViewBag.TotalPage - maxPages + 3, ViewBag.TotalPage, null) // Show last pages
+
+        return; // Exit
+    }
+
+    if (pagesBefore <= 4)
+    {
+        @buildLinks(1, maxPages - 2, null) // Show 1st pages
+
+
+        int pageSubset = maxPages + 2 < ViewBag.TotalPage ? maxPages + 2 : ViewBag.TotalPage - 1;
+        @buildLinks(pageSubset, pageSubset, "...") // Show page subset (...)
+
+                                                @buildLinks(ViewBag.TotalPage, ViewBag.TotalPage, null) // Show last page
+
+        return; // Exit
+
+    }
+
+    if (pagesAfter > 4)
+    {
+        @buildLinks(1, 1, null) // Show 1st pages
+
+        int pageSubset1 = ViewBag.CurrentPage - 7 > 1 ? ViewBag.CurrentPage - 7 : 2;
+        int pageSubset2 = ViewBag.CurrentPage + 7 < ViewBag.TotalPage ? ViewBag.CurrentPage + 7 : ViewBag.TotalPage - 1;
+
+        @buildLinks(pageSubset1, pageSubset1, pageSubset1 == ViewBag.CurrentPage - 4 ? null : "...") // Show 1st page subset (...)
+
+                                                                                                    @buildLinks(ViewBag.CurrentPage - 3, ViewBag.CurrentPage + 3, null) // Show middle pages
+
+        // Show 2nd page subset (...)
+        // only show ... if page is contigous to the previous one.
+        @buildLinks(pageSubset2, pageSubset2, pageSubset2 == ViewBag.CurrentPage + 4 ? null : "...")
+        @buildLinks(ViewBag.TotalPage, ViewBag.TotalPage, null) // Show last page
+
+        return; // Exit
+
+    }
+}
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 ">
+                    <div class="panel panel-yellow">
+                        <div class="panel-heading text-left">
+                            <span><i class="ion ion-ios-people fa-fw"></i>Audit Trail - Your IP is @ViewBag.IP</span>
+                            <div class="pull-right">
+
+                                <div class="btn-group open">
+                                    <a class=" btn btn-info btn-xs" href="#" onclick="printMe()" title="print"><i class="ion ion-printer fa-fw"></i></a>
+                                    <a class=" btn btn-success btn-xs" href="@Url.Action("ExportAudit", "Admin")" title="Export"><i class="ion ion-ios-cloud-download-outline fa-fw"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body table-responsive">
+                            <div class="pull-right small col-lg-offset-9">
+                                @using (Html.BeginForm("AuditTrail", "Admin", null, FormMethod.Post))
+                                {
+                                    <div class="form-group input-group  form-group-sm">
+                                        <input type="text" value="@ViewBag.SearchString" name="SearchString" class="form-control" placeholder="search here">
+                                        <span class="input-group-btn">
+                                            <button type="submit" class="btn btn-info btn-sm">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            </div>
+                            <table class="table  table-condensed   text-dark-space text-left small ">
+                                <thead class="text-center meronbackground">
+                                    <tr>
+                                        <th>Audit Id</th>
+                                        <th>Audit</th>
+                                        <th>Note</th>
+                                        @*<th>Created Date</th>*@
+                                        <th>Local Date</th>
+                                        <th>Created By</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.AuditTrailId</td>
+                                            <td>@item.AuditName</td>
+                                            <td>@item.Note </td>
+                                            @*<td>@item.CreatedDate</td>*@
+                                            <td>@item.LocalDateTime</td>
+                                            <td>@item.CreatedBy</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <!-- /.panel-body -->
+                        <ul class="pagination pagination-sm">
+                            @*@for (int p = 1; p <= ViewBag.TotalPage; p++)
+                                {
+                                    <li class="@(p == ViewBag.CurrentPage ? "active" : " ")">
+                                        <a href="@Url.Action("AuditTrail", "Admin", new { page = @p })"> @p </a>
+                                    </li>
+                                }*@
+                            @pageLinks()
+                        </ul>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

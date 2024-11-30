@@ -1,0 +1,86 @@
+﻿@model IQueryable<SabongPinoy.Models.v_UsersAgents>
+@{
+    ViewBag.Title = "Members";
+}
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 ">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-left">
+                            <span><i class="ion ion-ios-people fa-fw"></i>List of Members</span>
+                            <div class="pull-right">
+                                <div class="btn-group open">
+                                    <a class="btn btn-default btn-xs" href="@Url.Action("AdminView", "Admin")" title="Go Back"><i class="ion ion-arrow-left-b fa-fw"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="form-wrapper table-responsive">
+                                <div class="pull-right small col-lg-offset-9">
+                                    @using (Html.BeginForm("Members", "MySabong", FormMethod.Get))
+                                    {
+                                        <div class="form-group input-group form-group-sm">
+                                            <input type="text" name="SearchString" class="form-control" placeholder="search">
+                                            <span class="input-group-btn">
+                                                <button type="submit" class="btn btn-info btn-sm ">
+                                                    <i class="fa fa-search"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    }
+
+                                </div>
+                                <table class="table table-responsive table-striped table-hover  text-dark-space text-left small">
+                                    <thead class="text-center">
+                                        <tr>
+                                            <th>Username</th>
+                                            <th>Commission</th>
+                                            <th>Agent</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+
+                                            <tr>
+                                                <td class="fa fa-cro">
+                                                    @item.Username
+                                                </td>
+                                                <td>
+                                                    @string.Format("{0:n}", @item.Commission)
+                                                </td>
+                                                <td>
+                                                    @item.Agent
+                                                </td>
+                                                <td class="text-center">
+                                                    @Html.ActionLink("Details", "MembersCommission", "Admin", new { uid = @item.User_Id, uname = @item.Username,agent=@item.Agent }, new { @class = "btn btn-primary btn-xs" })
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+                                <ul class="pagination pagination-sm ">
+                                    @for (int p = 1; p <= ViewBag.TotalPage; p++)
+                                    {
+                                        <li class="@(p == ViewBag.CurrentPage ? "active" : " ")">
+                                            <a href="@Url.Action("Members", "Admin", new { page = @p, agent = @Request.QueryString["agent"] , uname = @Request.QueryString["uname"]})"> @p </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

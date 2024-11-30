@@ -1,0 +1,99 @@
+﻿@model SabongPinoy.Models.ArenaNameViewModel
+@{
+    ViewBag.Title = "Arena Names";
+}
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 ">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-left">
+                            <span><i class="ion ion-ios-people fa-fw"></i>@Request.QueryString["a"] -  Names</span>
+                            <div class="pull-right">
+                                <div class="btn-group open">
+                                    <a class=" btn btn-default btn-xs" href="@Url.Action("Arena", "Admin")" title="Go Back"><i class="ion ion-arrow-left-b fa-fw"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="form-wrapper">
+                                <h3 class="text-left text-custom-one">Enter Names</h3>
+                                <hr />
+                                @using (Html.BeginForm("ArenaName", "Admin", new { aid = @Request.QueryString["aid"], a = @Request.QueryString["a"] }, FormMethod.Post, new { @class = "form-horizontal text-left" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.ValidationSummary(true)
+                                    <div class="error-div small">
+                                        <p class="alert-danger"> @Html.ValidationMessage("ErrorMessage")</p>
+                                    </div>
+                                    @Html.HiddenFor(model => model.ArenaName.ArenaNameId)
+
+
+                                    if (Model.ArenaName.ArenaNameId > 0)
+                                    {
+                                        <div class="form-group text-dark-mid">
+                                            @Html.LabelFor(model => model.ArenaName.ArenaNameId, new { @class = "control-label col-sm-4" })
+                                            <div class="col-sm-6">
+                                                <p class="form-control-static">@Html.DisplayFor(model => model.ArenaName.ArenaNameId)</p>
+                                            </div>
+                                        </div>
+                                    }
+
+                                    <div class="form-group text-dark-mid">
+                                        @Html.LabelFor(model => model.ArenaName.EntryName, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-6">
+                                            @Html.TextBoxFor(model => model.ArenaName.EntryName, new { @class = "form-control input-sm " })
+                                            <span class="text-info small">ENTER '--' IF NO NAME </span>
+                                            <div class="error-div small">
+                                                @Html.ValidationMessageFor(model => model.ArenaName.EntryName)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-actions no-margin-bottom text-right">
+                                        @Html.ActionLink("Reset", "ArenaName", "Admin", new { aid = Request.QueryString["aid"], a = Request.QueryString["a"] }, new { @class = "btn btn-default " })
+                                        <input type="submit" value="Save" name="UserEdit" class="btn btn-primary" />
+                                    </div>
+                                }
+                            </div>
+
+
+                            <table class="table table-striped table-hover  text-dark-space text-left small">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Entry Name</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.ArenaNames)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @item.ArenaNameId
+                                            </td>
+                                            <td>
+                                                @item.EntryName
+                                            </td>
+
+                                            <td class="text-center">
+
+                                            <td class="text-center">
+                                                @Html.ActionLink("edit", "ArenaName", "Admin", new { aid = @Request.QueryString["aid"], a = @Request.QueryString["a"], anid = @item.ArenaNameId }, new { @class = "btn btn-danger btn-xs" })
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

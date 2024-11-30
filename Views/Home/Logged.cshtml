@@ -1,0 +1,244 @@
+﻿@model SabongPinoy.Models.ArenaChatViewModel
+@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_mainLayout.cshtml";
+    <script src="~/Scripts/jquery.signalR-2.2.0.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+     
+    <script src="~/Scripts/home2.js"></script>
+}
+
+<div class="container-fluid">
+
+    <div class="row ">
+        <div class="col-md-8 col-xs-12 nopadding">
+
+            <div class="col-md-12 col-xs-12 nopadding">
+                <div class="panel panel-whitGray">
+                    <div class="panel-heading">
+                        <i class="fa fa-play-circle"></i>   Today's Event
+                    </div>
+                    <div class="panel-body  text-center img-responsive">
+
+
+                        @if (Model.TodaysEvent.Count() == 1 || Model.TodaysEvent.Count() == 0)
+                        {
+                            <div class="eventWrapper">
+                                @{int today = 0;}
+                                @foreach (var item in Model.TodaysEvent)
+                                {
+                                    today = today + 1;
+                                    <h2 class="event-name">@item.ArenaName</h2>
+                                    <p>
+                                        @item.DateOfFight.ToLongDateString()
+                                    </p>
+                                    <p>
+                                        @item.Location
+                                    </p>
+                                    <a href="@Url.Action("Watch", "Arena", new { aid = @item.ArenaId })" class="page-scroll btn btn-danger btn-xl btnBlackRed "><i class="fa fa-video-camera"></i> ENTER</a>
+                                }
+
+
+
+                                @if (today == 0)
+                                {
+                                    <h2 class="event-name">No schedule today</h2>
+                                }
+
+
+                            </div>
+
+                                    }
+
+
+
+                        @if (Model.TodaysEvent.Count() == 2)
+                        {
+                            <div class="eventWrapper">
+                                @{int today = 0;}
+                                @foreach (var item in Model.TodaysEvent)
+                                {
+                                    today = today + 1;
+                                    <div class="col-md-6 col-xs-6">
+                                        <h2 class="event-name">@item.ArenaName</h2>
+                                        <p>
+                                            @item.DateOfFight.ToLongDateString()
+                                        </p>
+                                        <p>
+                                            @item.Location
+                                        </p>
+                                        <a href="@Url.Action("Watch", "Arena", new { aid = @item.ArenaId })" class="page-scroll btn btn-danger btn-xl btnBlackRed "><i class="fa fa-video-camera"></i> ENTER</a>
+                                    </div>
+                                }
+
+
+
+                                @if (today == 0)
+                                {
+                                    <h2 class="event-name">No schedule today</h2>
+                                }
+
+                            </div>
+                                    }
+
+
+
+
+
+
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="col-md-12 col-xs-12 nopadding">
+
+                <img src="~/img/receiver_logo4.png" class="img-responsive center_div" />
+            </div>
+
+
+         
+        </div>
+        <div class="col-md-4 col-xs-12 nopadding">
+            <div class="col-md-12 col-xs-12">
+                @if (!User.Identity.IsAuthenticated)
+            {
+                    <div class="panel panel-BlackGold ">
+                        <div class="panel-heading">
+                            <i class="fa fa-user"></i>   Player Login
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-signin ">
+                                @using (Html.BeginForm("Index", "Home", new { ReturnUrl = ViewBag.ReturnURL }, FormMethod.Post, new { @class = "form-horizontal text-left" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.ValidationSummary(true)
+                                    <div class="error-div small">
+                                        @Html.ValidationMessage("InvalidLogin")
+                                    </div>
+                                    <br />
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            @Html.TextBoxFor(model => model.UserLogin.Username, new { @class = "form-control input input-sm", @placeholder = "enter username" })
+                                            <div class="error-div small">
+                                                @Html.ValidationMessageFor(model => model.UserLogin.Username)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            @Html.PasswordFor(model => model.UserLogin.Password, new { @class = "form-control input input-sm", @placeholder = "enter password" })
+                                            <div class="error-div small">
+                                                @Html.ValidationMessageFor(model => model.UserLogin.Password)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <button type="submit" class="btn btn-sm btn-danger btnBlackRed">Sign in</button> @Html.ActionLink("CLICK TO REGISTER", "Register", "Account", null, new { @class = "pull-right text-warning" })
+                                        </div>
+                                    </div>
+
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="panel panel-BlackGold">
+                        <div class="panel-heading">
+                            <i class="fa fa-money"></i>   Welcome
+                        </div>
+                        <div class="panel-body">
+                            <h3 class="text-center">Your points</h3>
+                            <h4 class="text-center">
+                                @{ var value = "0.00";}
+                                @if (ViewBag.MainTotalPoints != null)
+                                {
+                                    value = @ViewBag.MainTotalPoints.ToString("###,##0.00");
+                                }
+                                @value
+                            </h4>
+                        </div>
+                    </div>
+                                    }
+            </div>
+
+
+
+            <div class="col-md-12 col-xs-12">
+                <div class="panel panel-primary-chat">
+                    <div class="panel-heading chat-heading text-left ">
+                        <i class="fa fa-pencil"></i>Message
+                        <span id="numberOnline"></span>
+                    </div>
+                    <div class="panel-body fixed-panel-chat-dark text-left" id="discussion">
+                       
+                    </div>
+                    <div class="panel-footer text-primary text-center padded">
+                        <div class="form-group chat-footer input-group ">
+                            <input type="text" id="message" class="form-control input-sm" />
+                            <span class="input-group-btn vertical">
+                                <button type="button" class="btn btn-primary btn-sm" id="sendmessage" value="Send">SEND</button>
+                            </span>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="col-md-12 col-xs-12 nopanel-body">
+                <p class="bg ">
+                    Please contact CSR using your real Facebook account for account verification, activation, and concern.
+                </p>
+                <div class="col-md-3 col-xs-3 text-center">
+                    <div class="col-md-12 ">
+                        <a href="https://www.facebook.com/eGameCashier.net" target="_blank"><span class="fa fa-facebook-square"></span></a>
+                    </div>
+                    <div class="col-md-12">
+                        <p class="bg">ELLA</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-xs-3 text-center">
+                    <div class="col-md-12">
+                        <a href="https://www.facebook.com/CSRANNERatsadahan" target="_blank"><span class="fa fa-facebook-square"></span></a>
+                    </div>
+                    <div class="col-md-12 ">
+                        <p class="bg">ANNE</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-xs-3 text-center">
+                    <div class="col-md-12">
+                        <a href="https://www.facebook.com/zelleRatsadahan" target="_blank"><span class="fa fa-facebook-square"></span></a>
+                    </div>
+                    <div class="col-md-12 ">
+                        <p class="bg">ZELLE</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-xs-3 text-center">
+                    <div class="col-md-12">
+                        <a href="https://www.facebook.com/csrnessRatsadahan" target="_blank"><span class="fa fa-facebook-square"></span></a>
+                    </div>
+                    <div class="col-md-12 ">
+                        <p class="bg">Ness</p>
+                    </div>
+                </div>
+
+            </div>
+
+            
+        </div>
+
+    </div>
+
+</div>
+
+ 
+
+@Html.Hidden("usernameId", @Model.CurrrentUsername, new { id = "usernameId" })
+@Html.Hidden("hdUserId", @Model.CurrrentUserId, new { id = "hdUserId" })

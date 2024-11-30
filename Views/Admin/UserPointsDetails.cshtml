@@ -1,0 +1,223 @@
+﻿@model IQueryable<SabongPinoy.Models.AllUserPoints>
+
+@{
+    ViewBag.Title = "UserPointsDetails";
+}
+
+
+@helper buildLinks(int start, int end, string innerContent)
+{
+
+    @*<li class="@(p == ViewBag.CurrentPage ? "active" : " ")">
+            <a href="@Url.Action("UserPointsDetails", "Admin", new { page = @p, uid = @Request.QueryString["uid"], un = @Request.QueryString["un"] })"> @p </a>
+        </li>*@
+
+    for (int i = start; i <= end; i++)
+    {
+        <li class="@(i == ViewBag.CurrentPage ? "active" : " ")">
+            <a href="@Url.Action("UserPointsDetails", "Admin", new { page = i, uid = @Request.QueryString["uid"], un = @Request.QueryString["un"], searchString = @ViewBag.SearchString,startDate =@ViewBag.StartDate,endDate =@ViewBag.EndDate })"> @(innerContent ?? i.ToString()) </a>
+        </li>
+    }
+
+}
+
+@helper pageLinks()
+{
+    const int maxPages = 11;
+
+    if (ViewBag.TotalPage <= maxPages)
+    {
+        @buildLinks(1, (int)ViewBag.TotalPage, null)
+        return;
+    }
+
+    int pagesAfter = ViewBag.TotalPage - ViewBag.CurrentPage; // Number of pages after current
+    int pagesBefore = ViewBag.CurrentPage - 1; // Number of pages before current
+
+    if (pagesAfter <= 4)
+    {
+        @buildLinks(1, 1, null) // Show 1st page
+
+        int pageSubset = ViewBag.TotalPage - maxPages - 1 > 1 ? ViewBag.TotalPage - maxPages - 1 : 2;
+        @buildLinks(pageSubset, pageSubset, "...") // Show page subset (...)
+
+                                                @buildLinks(ViewBag.TotalPage - maxPages + 3, ViewBag.TotalPage, null) // Show last pages
+
+        return; // Exit
+    }
+
+    if (pagesBefore <= 4)
+    {
+        @buildLinks(1, maxPages - 2, null) // Show 1st pages
+
+
+        int pageSubset = maxPages + 2 < ViewBag.TotalPage ? maxPages + 2 : ViewBag.TotalPage - 1;
+        @buildLinks(pageSubset, pageSubset, "...") // Show page subset (...)
+
+                                                @buildLinks(ViewBag.TotalPage, ViewBag.TotalPage, null) // Show last page
+
+        return; // Exit
+
+    }
+
+    if (pagesAfter > 4)
+    {
+        @buildLinks(1, 1, null) // Show 1st pages
+
+        int pageSubset1 = ViewBag.CurrentPage - 7 > 1 ? ViewBag.CurrentPage - 7 : 2;
+        int pageSubset2 = ViewBag.CurrentPage + 7 < ViewBag.TotalPage ? ViewBag.CurrentPage + 7 : ViewBag.TotalPage - 1;
+
+        @buildLinks(pageSubset1, pageSubset1, pageSubset1 == ViewBag.CurrentPage - 4 ? null : "...") // Show 1st page subset (...)
+
+                                                                                                    @buildLinks(ViewBag.CurrentPage - 3, ViewBag.CurrentPage + 3, null) // Show middle pages
+
+        // Show 2nd page subset (...)
+        // only show ... if page is contigous to the previous one.
+        @buildLinks(pageSubset2, pageSubset2, pageSubset2 == ViewBag.CurrentPage + 4 ? null : "...")
+        @buildLinks(ViewBag.TotalPage, ViewBag.TotalPage, null) // Show last page
+
+        return; // Exit
+
+    }
+}
+
+<div id="home">
+    <div class="container-fluid">
+        <div id="services">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+                    <div class="panel panel-red">
+                        <div class="panel-heading text-left">
+                            <span><i class="ion ion-ios-people fa-fw"></i>Username - @Request.QueryString["un"] </span>
+                            <div class="pull-right">
+                                <div class="btn-group open">
+                                    <a class=" btn btn-default btn-xs" href="@Url.Action("Users", "Admin")" title="Go Back"><i class="ion ion-arrow-left-b fa-fw"></i></a>
+                                    <a class=" btn btn-success btn-xs" href="@Url.Action("ExportUserPoints", "Admin", new { uid = @Request.QueryString["uid"], un = @Request.QueryString["un"], searchString = @Request.QueryString["searchString"] })" title="Export"><i class="ion ion-ios-cloud-download-outline fa-fw"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body table-responsive">
+                            <div class="form-wrapper table-responsive">
+                                <div class="text-center small ">
+                                    @using (Html.BeginForm("UserPointsDetails", "Admin", new { uid = Request.QueryString["uid"], un = Request.QueryString["un"], searchString = @Request.QueryString["searchString"] }, FormMethod.Post))
+                                    {
+                                    <div class="form-group input-group  form-group-sm">
+                                        <fieldset>
+                                            @Html.Label("StartDate", "Start Date:")
+                                            <input class="startdate " id="startdate" name="startdate" type="date" value="@ViewBag.StartDate.ToString("yyyy-MM-dd")">
+                                            @Html.Label("enddate", "End Date:")
+                                            <input class="enddate " id="enddate" name="enddate" type="date" value="@ViewBag.EndDate.ToString("yyyy-MM-dd")" >
+                                            <input type="text"  value="@ViewBag.SearchString" name="SearchString" class="input-lg"  placeholder="search here">
+                                            <input type="submit" value="SEARCH" />
+                                        </fieldset>
+                                    </div>
+                                    }
+
+
+                                </div>
+                                <table class="table table-hover  text-dark-space text-left small">
+                                    <thead class="text-center meronbackground">
+                                        <tr>
+                                            <th>Date Loaded</th>
+                                            <th>Loaded From</th>
+                                            <th>Points</th>
+                                            <th>Event</th>
+                                            <th>Date of Event</th>
+                                            <th>Fight #</th>
+                                            @*<th>Odd</th>*@
+                                            <th>BetOn</th>
+                                            <th>Bet</th>
+                                            @*<th>From</th>
+                                            <th>To</th>*@
+                                            <th>Loaded By</th>
+                                            <th>Balance</th>
+                                            <th>Notes</th>
+                                            <th>Bet by</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.LocalDateTime</td>
+                                            <td>@item.LoadedFrom</td>
+                                            <td>
+                                                @if (item.Points > 0)
+                                                {
+                                                    <span class="meronbackground">@item.Points</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="walabackground">@item.Points</span>
+                                                }
+
+                                            </td>
+                                            <td>@item.ArenaName</td>
+                                            <td>
+                                                @if (item.DateOfFight.HasValue)
+                                                {
+                                                    @item.DateOfFight.Value.ToString("MM/dd/yyyy")
+                                                }
+                                                else
+                                                {
+                                                    @item.DateOfFight
+                                                }
+
+
+
+                                            </td>
+                                            <td>@item.GameNumber</td>
+
+                                            @*<td>
+                                                @if (@item.MeronRightSide.HasValue)
+                                                {
+                                                    if (@item.MeronRightSide.Value)
+                                                    {
+                                                        @item.OddNameRight(@item.OddName)
+                                                    }
+                                                    else
+                                                    {
+                                                        @item.OddName
+                                                    }
+                                                }
+
+                                            </td>*@
+                                            <td>@item.BetOn</td>
+                                            <td>
+                                                @if (@item.MatchedAmount.HasValue)
+                                                {
+                                                    @item.MatchedAmount.Value
+                                                }
+                                            </td>
+                                            @*<td>@item.PasaloadFrom</td>
+                                            <td>@item.PasaloadTo</td>*@
+                                            <td>@item.LoadedBy</td>
+                                            <td>@item.CurrentTotal</td>
+                                            <td>@item.Notes</td>
+                                            <td>@item.BetBy</td>
+                                        </tr>
+                                    }
+                                    </tbody>
+                                </table>
+                            </div>
+                            </div>
+                        <!-- /.panel-body -->
+                        <ul class="pagination pagination-sm">
+                            @*@for (int p = 1; p <= ViewBag.TotalPage; p++)
+                                {
+                                    <li class="@(p == ViewBag.CurrentPage ? "active" : " ")">
+                                        <a href="@Url.Action("UserPointsDetails", "Admin", new { page = @p, uid = @Request.QueryString["uid"], un = @Request.QueryString["un"] })"> @p </a>
+                                    </li>
+                                }*@
+
+                            @pageLinks()
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

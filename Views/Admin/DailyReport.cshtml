@@ -1,0 +1,169 @@
+﻿@model SabongPinoy.Models.DailyReportViewModel
+@{
+    ViewBag.Title = "Daily Report";
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+}
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-sm-11 col-sm-offset-1 col-md-11 col-md-offset-1 col-lg-11 col-lg-offset-1 ">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-left">
+                            <i class="ion-ios-people"></i> Daily Report
+                            <div class="pull-right">
+                                <div class="btn-group open">
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="form-wrapper">
+                                <h3 class="text-left text-custom-one"></h3>
+                                <hr />
+                                @using (Html.BeginForm("DailyReport", "Admin", FormMethod.Get))
+                                {
+                                    <fieldset>
+                                        <legend>Search Report by Date</legend>
+                                        @Html.Label("StartDate", "Date:")
+                                        <input class="startdate input-smBlack" id="startdate" name="startdate" type="date" value="">
+                                        <input type="submit" value="SEARCH" />
+                                    </fieldset>
+                                }
+
+
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-md-4 col-sm-4 label ">
+                                    <div class="label-primary padAll">
+                                        <h4>ALL <br /> POINTS:</h4>
+                                        <h4>@Model.DailyReport.TotalPoints.ToString("###,##0.##")</h4>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 col-sm-4 label ">
+                                    <div class="label-primary padAll">
+                                        <h4>ALL <br /> CASHIER POINTS:</h4>
+                                        <h4>@Model.DailyReport.TotalCashierPoints.ToString("###,##0.##")</h4>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 col-sm-4 label ">
+                                    <div class="label-primary padAll">
+                                        <h4>ALL <br /> PLAYER POINTS:</h4>
+                                        <h4>@Model.DailyReport.TotalPlayerPoints.ToString("###,##0.##")</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div>
+                                    @if (@Request.QueryString["startDate"] != null)
+                                    {
+                                        <h4>DATE: @Convert.ToDateTime(@Request.QueryString["startDate"]).ToString("MM/dd/yyyy")</h4>
+                                    }
+                                    else
+                                    {
+                                        <h4>DATE: @DateTime.Today.ToString("MM/dd/yyyy") </h4>
+                                    }
+                                </div>
+                                <div class="col-md-4 col-sm-4 label ">
+                                    <div class="label-success padAll">
+                                        <h4>ALL <br /> LOAD:</h4>
+                                        <h4>@Model.DailyReport.TodayCashIn.ToString("###,##0.##")</h4>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 col-sm-4 label ">
+                                    <div class="label-success padAll">
+                                        <h4>CASHIER <br /> LOAD:</h4>
+                                        <h4>@Model.DailyReport.TodayCashInCashier.ToString("###,##0.##")</h4>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 col-sm-4 label ">
+                                    <div class="label-success padAll">
+                                        <h4>PLAYER <br /> LOAD:</h4>
+                                        <h4>@Model.DailyReport.TodayCashInPlayer.ToString("###,##0.##")</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr />
+                            <div class="row">
+
+                                <div class="col-md-4 col-sm-4 label ">
+                                    <div class="label-danger padAll">
+                                        <h4>ALL <br /> CASHOUT:</h4>
+                                        <h4>@Model.DailyReport.TodayCashout.ToString("###,##0.##")</h4>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 col-sm-4 label ">
+                                    <div class="label-danger padAll">
+                                        <h4>CASHIER <br /> CASHOUT:</h4>
+                                        <h4>@Model.DailyReport.TodayCashoutCashier.ToString("###,##0.##")</h4>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 col-sm-4 label ">
+                                    <div class="label-danger padAll">
+                                        <h4>PLAYER <br /> CASHOUT:</h4>
+                                        <h4>@Model.DailyReport.TodayCashoutPlayer.ToString("###,##0.##")</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr />
+                            <div class="form-wrapper">
+                                <div class="row table-responsive">
+                                    <table class="table table-striped table-hover text-dark-space text-left table-responsive">
+                                        <thead class="text-center">
+                                            <tr>
+                                                <th>Arena</th>
+                                                <th>Date</th>
+                                                <th class="text-center">Commission</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.DailyArenaReports != null)
+                                            {
+                                                foreach (var item in Model.DailyArenaReports)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            <h5>
+                                                                @item.ArenaName
+                                                            </h5>
+                                                        </td>
+                                                        <td>
+                                                            <h5>
+                                                                @item.DateOfFight.ToString("MM/dd/yyyy")
+                                                            </h5>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <h4 >
+                                                                @item.TotalCommission.ToString("###,###.##")
+                                                            </h4>   
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+
+
+                                </div>
+                            </div>
+                            </div>
+                            <!-- /.panel-body -->
+                        </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    </div>

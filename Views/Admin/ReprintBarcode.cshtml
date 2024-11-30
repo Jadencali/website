@@ -1,0 +1,94 @@
+﻿@model SabongPinoy.Models.DUserBets
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>eGameCashier.com - Bet</title>
+    <script src="~/Scripts/print.min.js"></script>
+
+    <script src="~/Scripts/JsBarcode.all.min.js"></script>
+
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script>
+        $(function () {
+              JsBarcode("#code128", @Request.QueryString["id"], {
+                format: "CODE128",
+                  height: 30,
+                  displayValue: true
+
+
+        });
+            printJS('printDiv', 'html');
+            //window.print();
+            //window.close();
+
+        });
+    </script>
+</head>
+<body>
+    @*<div id="printDiv" style="text-transform:uppercase;font-family: Lucida Console, Courier, monospace;font-size:45px;">*@
+    <div id="printDiv" style="text-transform: uppercase; font-family: Verdana, Helvetica, sans-serif; font-size: 11px;">
+        <table>
+            <tr>
+                <td colspan="2">@Model.ArenaName</td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;">
+                    Bet Id:
+                </td>
+                <td>@Model.UserBetId</td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;">
+                    Username:
+                </td>
+                <td>@Model.Username</td>
+            </tr>
+
+            <tr>
+                <td style="font-weight:bold;">
+                    Fight #:
+                </td>
+                <td>@Model.GameNumber</td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;">
+                    Bet:
+                </td>
+                <td>@Model.MatchedAmount.ToString("###,###,###")</td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;">
+                    Bet on:
+                </td>
+                <td>
+                    @Model.BetOn
+                </td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;" colspan="2">
+                    Date:
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">@Model.LocalDateTime</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="font-weight:bold;">
+                    ***REPRINT***
+                </td>
+
+
+
+            </tr>
+        </table>
+        <svg id="code128"></svg>
+    </div>
+
+</body>
+</html>

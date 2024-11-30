@@ -1,0 +1,182 @@
+﻿@model IQueryable<SabongPinoy.Models.v_ReportPointDetailsPrint>
+
+@{
+    ViewBag.Title = "ReportDetails";
+
+    <script type="text/javascript">
+      
+        $(document).ready(
+        function () {
+                $('.lnkViewPReprint').click(function () {
+                var refNum = $(this).attr('href');
+                if (refNum != '') {
+                    var x = screen.width / 2 - 700 / 2;
+                    var y = screen.height / 2 - 450 / 2;
+                    window.open(refNum, 'Reprint', 'height=485,width=700,left=' + x + ',top=' + y);
+                }
+                return false;
+                });
+
+
+
+            }
+        );
+    </script>
+}
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-xs-12  col-sm-12 col-md-12 col-lg-12">
+                    <div class="panel panel-green">
+                        <div class="panel-heading text-left">
+                            <span><i class="ion ion-ios-people fa-fw"></i>Event Details - @ViewBag.ArenaName </span>
+                            <div class="pull-right">
+                                <div class="btn-group open">
+                                    <a class=" btn btn-default btn-xs" href="@Url.Action("MyReports", "MySabong")" title="Go Back"><i class="ion ion-arrow-left-b fa-fw"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        @{ decimal totalComm = 0;}
+                    <div class="panel-body table-responsive ">
+                        <h3 class="text-left text-custom-one">
+                            <span class="text-info">Total </span>   @ViewBag.Total.ToString("###,###,###")
+                        </h3>
+                        <table class="table table-striped table-hover  text-dark-space text-left small">
+                            <thead class="text-center">
+                                <tr>
+                                    <th>Bet Id</th>
+                                    <th>Fight #</th>
+                                    <th>Date</th>
+                                    <th>Local Date</th>
+                                    <th>Winner</th>
+                                    <th>Bet on</th>
+                                    <th>Odd</th>
+                                    <th>Bet Amount</th>
+                                    <th>Matched</th>
+                                    <th>Winnings</th>
+                                    <th>Commision</th>
+                                    <th>Net</th>
+                                    <th>Payout</th>
+                                    <th>Balance</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.UserBetId</td>
+                                        <td>@item.GameNumber</td>
+                                        <td>@item.BetTimestamp</td>
+                                        <td>@item.LocalDateTime</td>
+                                        <td>@item.Result</td>
+                                        <td>@item.Beton</td>
+                                        <td>
+                                            @if (ViewBag.MeronIsRightside)
+                                            {
+                                                @item.OddNameRight(@item.OddName)
+                                            }
+                                            else
+                                            {
+                                                @item.OddName
+                                            }
+                                        </td>
+                                        <td>@item.Bet</td>
+                                        <td>@item.MatchedAmount</td>
+                                        <td>
+                                            @if (item.Winnings.HasValue)
+                                            {
+                                                if (item.Winnings.Value > 0)
+                                                {
+                                                    <span class="meronbackground">@item.Winnings</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="walabackground">@item.Winnings</span>
+                                                }
+                                            }
+
+
+                                        </td>
+                                        <td>
+                                            @item.Commision
+                                            @if (@item.Commision.HasValue)
+                                            {
+                                                totalComm = totalComm + @item.Commision.Value;
+                                            }
+                                        </td>
+                                        <td>
+                                            @{decimal net = 0;}
+                                            @if (item.Winnings.HasValue)
+                                            {
+                                                if (item.Winnings.Value > 0)
+                                                {
+                                                    net = item.Winnings.Value - item.Commision.Value;
+                                                }
+                                            }
+
+                                            @net.ToString("###,###,###")
+                                        </td>
+                                        <td>
+                                            @{decimal payout = 0;}
+                                            @if (item.Winnings.HasValue)
+                                            {
+
+
+                                                if (item.Winnings.Value > 0)
+                                                {
+
+                                                    if (item.Beton == "D")
+                                                    {
+                                                        <span class="meron-background-gradient-circle"> @item.Winnings.Value.ToString("###,###,###")</span>
+                                                    }
+                                                    else
+                                                    {
+
+                                                        payout = item.MatchedAmount.Value + item.Winnings.Value - item.Commision.Value;
+                                                        <span class="meron-background-gradient-circle"> @payout.ToString("###,###,###")</span>
+                                                    }
+
+
+                                                }
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (item.CurrentTotal.HasValue)
+                                            {
+                                                @item.CurrentTotal.Value.ToString("###,###,###")
+                                            }
+
+                                        </td>
+                                        <td>
+                                            @*if (@ViewBag.IsTellerAccount || @ViewBag.IsAdmin)
+                                            {
+                                                <a href="~/Arena/GetBarCode?id=@item.UserBetId" class="btn btn-sm btn-warning lnkViewPReprint">Click for Reprint</a>
+                                            }
+                                        </td>*@
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+
+                        <h3 class="text-left text-custom-one">
+                            <span class="text-info">Plasada </span>  @totalComm.ToString("###,###,###")
+                        </h3>
+
+                    </div>
+
+
+                      
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

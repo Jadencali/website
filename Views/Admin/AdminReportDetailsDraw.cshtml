@@ -1,0 +1,118 @@
+﻿@model IEnumerable<SabongPinoy.Models.ReportPointDetails>
+@{
+    ViewBag.Title = "Report Details Draw";
+}
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12  col-md-12 col-lg-10 col-lg-offset-1 ">
+                    <div class="panel panel-red">
+                        <div class="panel-heading text-left">
+                            <span><i class="ion ion-ios-people fa-fw"></i>Event Details - @ViewBag.ArenaName </span>
+                            <div class="pull-right">
+                                <div class="btn-group open">
+                                    <a class=" btn btn-default btn-xs" href="@Url.Action("DailyPlasadaNew", "Admin")" title="Go Back"><i class="ion ion-arrow-left-b fa-fw"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body table-responsive">
+                            <br />
+                            <h3 class="text-bold">Draw Winning (Panalo Banka): <span class="text-red"> @ViewBag.DrawWin.ToString("###,###,##0.00")</span></h3>
+                            <br />
+                            <h3 class="text-bold">Draw Loss(Talo Banka): <span class="text-red"> @ViewBag.DrawLoss.ToString("###,###,##0.00")</span></h3>
+                            <br />
+                            <h3 class="text-bold">Win/Loss: <span class="text-red"> @Convert.ToString(@ViewBag.DrawWin - @ViewBag.DrawLoss)</span></h3>
+                            <br />
+                            <h3 class="text-bold">Total Bet: <span class="text-red"> @Convert.ToString(@ViewBag.Commission.ToString("###,###,##0.00"))</span></h3>
+
+                            <table class="table table-hover  text-dark-space text-left small">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th>Fight #</th>
+                                        <th>Local Date</th>
+                                        <th>Username</th>
+                                        <th>Winner</th>
+                                        <th>Bet on</th>
+                                        <th>Odd</th>
+                                        <th>Bet Amount</th>
+                                        @*<th>Matched</th>*@
+                                        <th>Gross Winnings</th>
+                                        <th>Commision</th>
+                                        <th>Net</th>
+                                        <th>Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.GameNumber</td>
+                                            @*<td>@item.BetTimestamp</td>*@
+                                            <td>@item.LocalDateTime</td>
+                                            <td>@item.UserName</td>
+                                            <td>@item.Result</td>
+                                            <td>@item.Beton</td>
+                                            <td>@item.OddName</td>
+                                            <td>@item.Bet.Value.ToString("###,###,###")</td>
+                                            @*<td>@item.MatchedAmount</td>*@
+                                            @*<td>@item.Winnings</td>*@
+
+                                        <td>
+                                            @if (item.Winnings.HasValue)
+                                            {
+                                                if (item.Winnings > 0)
+                                                {
+                                                    <span class="meronbackground">@item.Winnings.Value.ToString("###,###,###")</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="walabackground">@item.Winnings.Value.ToString("###,###,###")</span>
+                                                }
+                                            }
+
+                                            </td>
+                                            <td>@item.Commision</td>
+                                            <td>
+                                                @{decimal net = 0;}
+                                                @if (item.Winnings.HasValue)
+                                                {
+
+                                                    if (item.Winnings.HasValue)
+                                                    {
+                                                        if (item.Winnings.Value > 0)
+                                                        {
+                                                            net = item.Winnings.Value - item.Commision.Value;
+                                                        }
+                                                    }
+                                                }
+                                                @net.ToString("###,###,###")
+                                            </td>
+                                            <td>  @if (item.CurrentTotal.HasValue)
+  {
+      @item.CurrentTotal.Value.ToString("###,###,###")
+  }</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <!-- /.panel-body -->
+                        <ul class="pagination pagination-sm">
+                            @for (int p = 1; p <= ViewBag.TotalPage; p++)
+                            {
+                                <li class="@(p == ViewBag.CurrentPage ? "active" : " ")">
+                                    <a href="@Url.Action("AdminReportDetailsDraw", "Admin", new { page = @p, aid = @Request.QueryString["aid"], a = @Request.QueryString["a"] })"> @p </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

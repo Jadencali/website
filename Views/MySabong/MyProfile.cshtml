@@ -1,0 +1,70 @@
+﻿@model SabongPinoy.Models.UsersProfile
+
+@{
+    ViewBag.Title = "My Profile";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2 ">
+            <section id="entryform">
+                <div class="container">
+                    <div class="row text-center ">
+                        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                            <div class="form-wrapper">
+                                <h3 class="text-left text-custom-one">User Profile</h3>
+                                <hr />
+                                @using (Html.BeginForm("MyProfile", "MySabong", null, FormMethod.Post, new { @class = "form-horizontal text-left" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.ValidationSummary(true)
+                                    @Html.HiddenFor(model => model.User_Id)
+                                    @Html.HiddenFor(model => model.UserProfileId)
+                                     @Html.HiddenFor(model => model.IsActive)
+                                     @Html.HiddenFor(model => model.FBAccount)
+                                      @Html.HiddenFor(model => model.NoChat)
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.LastName, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            @Html.TextBoxFor(model => model.LastName, new { @class = "form-control input-sm" })
+                                            <div class="error-div small">
+                                                @Html.ValidationMessageFor(model => model.LastName)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.FirstName, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control input-sm" })
+                                            <div class="error-div small">
+                                                @Html.ValidationMessageFor(model => model.FirstName)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.Email, new { @class = "control-label col-sm-4" })
+                                        <div class="col-sm-8">
+                                            @Html.TextBoxFor(model => model.Email, new { @class = "form-control input-sm" })
+                                            <div class="error-div small">
+                                                @Html.ValidationMessageFor(model => model.Email)
+                                                @Html.ValidationMessage("EmailExist")
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-actions no-margin-bottom text-right">
+                                        @*<input type="submit" value="Save" name="SaveProfile" class="btn btn-primary" />*@
+                                    </div>
+                                     <h5 class="text-left text-custom-one">@ViewBag.Message</h5>
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+    </div>
+</div>
+

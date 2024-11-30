@@ -1,0 +1,137 @@
+﻿@model SabongPinoy.Models.SupportListViewModel
+@{
+    ViewBag.Title = "CSR";
+    <script>
+        $(document).ready(function () {
+            var isClosed = $('#IsClosed').val();
+            if (isClosed == 'True') {
+                $('#chkHide').prop("checked", true);
+            } else {
+                $('#chkHide').prop("checked", false);
+            }
+           
+            $('#chkHide').click(function () {
+             window.location.href= "@Url.Action("CSR")" + "/?hideClosed=" + this.checked;
+            });
+
+            var listItem = $("#divFooter li");
+            listItem.each(function (x) {
+               var newString = "" + (x + 1);
+               var url = $("a#hlFooter-" + newString).attr("href");
+               $("a#hlFooter-" + newString).attr("href", url + "&hideClosed=" + $('#IsClosed').val());
+            });
+        });
+      
+    </script>
+}
+@Html.HiddenFor(model => model.IsClosed)
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 ">
+                    <div class="panel panel-green">
+                        <div class="panel-heading text-left">
+                            <i class="ion-ios-email"></i> CSR
+                            <div class="pull-right">
+                                <div class="btn-group open">
+                                    <a href="@Url.Action("SupportInfo","MyService")" class="btn btn-custom-two btn-xs" title="New Ticket">Create New Support Request</a>
+                                </div>
+                            </div>11
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="row padded">
+                                    <h5 class="text-dark-mid text-justify">For inquiries, load, and withdrawal you can contact us at <a href=" mailto:support@eGameCashier.net" class="text-custom-one">
+                                    support@eGameCashier.net</a>  or create a <span class="text-danger"> New Support Request</span> </h5>
+                            
+                            </div>
+                            <div class="pull-left small col-lg-offset-9">
+                                <div class="form-group input-group form-group-sm">
+                                    <label class="text-dark-space-bold"><input type="checkbox" name="OpenOnly" value="OpenOnly" id="chkHide">Hide Closed Support</label>
+                                </div>
+                                </div>
+
+                                <table class="table table-striped table-hover  table-responsive text-dark-space text-left small">
+                                    <thead class="text-center ">
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Date Created</th>
+                                            <th>Created By</th>
+                                            <th>Support Type</th>
+                                            <th>Payment Center</th>
+                                            <th>Open</th>
+                                            <th>CSR</th>
+                                            <th>Date Closed</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.CustomerSupports)
+                                        {
+                                            var classOpen = "";
+                                            var openClose = "";
+                                            if (item.IsOpen)
+                                            {
+                                                classOpen = "label-danger text-white text-center";
+                                                openClose = "Yes";
+                                            }
+                                            else
+                                            {
+                                                classOpen = "label-info text-white text-center";
+                                                openClose = "No";
+                                            }
+                                            <tr>
+                                                <td>
+                                                    @item.SupportId
+                                                </td>
+                                                <td>
+                                                    @item.DatePosted
+                                                </td>
+                                                <td>
+                                                    @item.Username
+                                                </td>
+                                                <td>
+                                                    @item.SupportType
+                                                </td>
+                                                <td>
+                                                    @item.LoadWithdrawalType
+                                                </td>
+                                                <td class="@classOpen">
+                                                    @openClose
+                                                </td>
+                                                <td>
+                                                    @item.ClosedBy
+                                                </td>
+                                                <td>
+                                                    @item.DateClosed
+                                                </td>
+                                                <td class="text-center">
+                                                    @Html.ActionLink("details", "SupportEdit", "MyService", new { sid = @item.SupportId }, new { @class = "btn btn-primary btn-xs" })
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                               
+                            </div>
+
+                        <ul class="pagination pagination-sm" id="divFooter">
+                           
+                            @for (int p = 1; p <= ViewBag.TotalPage; p++)
+                            {
+                                
+                                <li class="@(p == ViewBag.CurrentPage ? "active" : " ")">
+                                    <a href="@Url.Action("CSR", "MyService", new { page = @p })" id="hlFooter-@p" > @p </a>
+                                </li>
+                            }
+                        </ul>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

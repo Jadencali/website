@@ -1,0 +1,268 @@
+﻿@model SabongPinoy.Models.AdminViewModel
+
+@{
+    ViewBag.Title = "AdminView";
+}
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-sm-6  col-md-6 col-lg-6">
+                        @*<div class="panel panel-primary">
+                            <div class="panel-heading text-left">
+                                <span><i class="ion ion-cash fa-fw"></i>Reports</span>
+                                <div class="pull-right">
+                                    <div class="btn-group open">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.panel-heading -->
+                            <div class="panel-body">
+                                <div class="form-wrapper">
+                                    <table class="table table-responsive table-condensed text-dark-space text-left small">
+                                        <thead class="text-center">
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Event</th>
+                                                <th>Total Fight</th>
+                                                <th>Total Commision</th>
+                                                <th></th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.ReportsPoints)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @item.DateOfFight.ToString("MM/dd/yyyy")
+                                                    </td>
+                                                    <td>
+                                                        @item.ArenaName
+                                                    </td>
+                                                    <td>
+                                                        @item.TotalFights
+                                                    </td>
+                                                    <td class=" text-right ">
+                                                        @item.TotalCommision.Value.ToString("###,##0.00")
+                                                    </td>
+                                                    <td class=" text-center text-red ">
+                                                        @Html.ActionLink("details", "AdminReportDetails", "Admin", new { aid = @item.ArenaId, a = @Html.Encode(@item.ArenaName) }, new { @class = "btn btn-danger btn-xs" })
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <ul class="pagination pagination-sm">
+                                @for (int p = 1; p <= ViewBag.TotalPage; p++)
+                                {
+                                    <li class="@(p == ViewBag.CurrentPage ? "active" : " ")">
+                                        <a href="@Url.Action("AdminView", "Admin", new { page = @p })"> @p </a>
+                                    </li>
+                                }
+                            </ul>
+                            <!-- /.panel-body -->
+                        </div>*@
+                        <div class="panel panel-yellow">
+                            <div class="panel-heading text-left">
+                                <span><i class="ion ion-cash fa-fw"></i>User Points</span>
+                                <div class="pull-right">
+                                    <div class="btn-group open">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.panel-heading -->
+                            <div class="panel-body">
+                                <div class="form-wrapper">
+                                    <h5 class="text-red">Total Points: @Model.TotalPoints.ToString("###,###,###.0")</h5>
+                                    <table class="table table-responsive table-striped table-hover text-dark-space text-left small">
+                                        <thead class="text-center">
+                                            <tr>
+                                                <th>Username</th>
+                                                <th class=" text-right ">Points</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.UsersPoints)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @Html.ActionLink(@item.UserName, "UserPayments", "Admin", new { uid = @item.User_Id, un = @item.UserName }, new { @class = "btn btn-success  btn-xs" })
+                                                    </td>
+                                                    <td class=" text-right ">
+                                                        @Html.ActionLink(@item.Points.Value.ToString("###,##0.00"), "UserPointsDetails", "Admin", new { uid = @item.User_Id, un = @item.UserName }, new { @class = "btn btn-danger  btn-xs" })
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <ul class="pagination pagination-sm">
+                                    @for (int p = 1; p <= ViewBag.UserTotalPage; p++)
+                                    {
+                                        <li class="@(p == ViewBag.UserCurrentPage ? "active" : " ")">
+                                            <a href="@Url.Action("AdminView", "Admin", new { userPage = @p })"> @p </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                      
+                            <!-- /.panel-body -->
+                        </div>
+                    
+                 
+                   
+                </div>
+                <div class="col-sm-6  col-md-6 col-lg-6">
+
+                    <div class="row">
+
+
+                    </div>
+                    <div class="row">
+                        @*<div class="panel panel-red">
+                <div class="panel-heading text-left">
+                    <span><i class="ion ion-ios-people fa-fw"></i>Monthly Load and Withdrawal</span>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <table class="table table-responsive  table-condensed  text-dark-space text-left small">
+                        <thead class="text-center">
+                            <tr>
+                                <th>Month</th>
+                                <th>Load</th>
+                                <th>Withdrawal</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Monthly)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.DayMonth
+                                    </td>
+                                    <td>
+                                        @item.Load
+                                    </td>
+                                    <td>
+                                        @item.Withdrawal
+                                    </td>
+                                    <td class=" text-center text-red ">
+                                        @Html.ActionLink("details", "MonthlyLoadDetails", "Admin", new { m = @item.DayMonth, y = @item.YearLoadWithdrawal }, new { @class = "btn btn-danger btn-xs" })
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.panel-body -->
+            </div>*@
+
+                        <div class="panel panel-grey">
+                            <div class="panel-heading text-left">
+                                <span><i class="ion ion-cash fa-fw"></i>Commission Summary</span>
+                                <div class="pull-right">
+                                    <div class="btn-group open">
+                                        @DateTime.Now.AddHours(@ViewBag.ServerHours)
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.panel-heading -->
+                            <div class="panel-body">
+                                <div class="form-wrapper">
+                                    <table class="table table-responsive  table-condensed text-dark-space text-left small">
+                                        <thead class="text-center">
+                                            <tr>
+                                                <th>Year</th>
+                                                <th>Month</th>
+                                                <th class=" text-right ">Commission</th>
+                                                <th class=" text-right ">Draw - Winning</th>
+                                                <th class=" text-right ">Draw - Loss</th>
+                                                @*<th class=" text-right ">Draw - Commission</th>*@
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.CommissionSummary)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @item.YearPoints
+                                                    </td>
+                                                    <td>
+                                                        @item.MonthPoints
+                                                    </td>
+                                                    <td class=" text-right ">
+                                                        @item.Commission.Value.ToString("###,##0.00")
+                                                    </td>
+                                                    <td class=" text-right ">
+                                                        @item.DrawBetWinning.Value.ToString("###,##0.00")
+                                                    </td>
+                                                    <td class=" text-right ">
+                                                        @item.DrawBetLoss.Value.ToString("###,##0.00")
+                                                    </td>
+                                                    @*<td class=" text-right ">
+                                            @item.DrawCommission.Value.ToString("###,##0.00")
+                                        </td>*@
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+                            </div>
+
+                            <!-- /.panel-body -->
+                        </div>
+                    </div>
+
+                    @*<div class="row">
+                        <div class="col-md-12 well">
+                            <a href="@Url.Action("AgentSummary", "Admin")" class="tm-more-button tm-more-button-welcome"><i class="fa fa-money"></i> Agent Summary</a>
+                        </div>
+                    </div>*@
+
+                    <div class="row">
+                        <div class="col-md-12 well">
+                            <a href="@Url.Action("DailyPlasada", "Admin")" class="tm-more-button tm-more-button-welcome"><i class="fa fa-money"></i> Daily Plasada</a>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 well">
+                            <a href="@Url.Action("DailyAudit", "Admin")" class="tm-more-button tm-more-button-welcome"><i class="fa fa-money"></i> Daily Audit</a>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 well">
+                            <a href="@Url.Action("DailyTransactions", "Admin")" class="tm-more-button tm-more-button-welcome"><i class="fa fa-money"></i> Daily Transactions</a>
+                        </div>
+                    </div>
+
+                    @*<div class="row">
+                        <div class="col-md-12 well">
+                            <a href="@Url.Action("MonthlyLoadWithdrawal", "Admin")" class="tm-more-button tm-more-button-welcome"><i class="fa fa-money"></i>Monthly Load Withdrawal</a>
+                        </div>
+                    </div>*@
+
+                    @*<div class="row">
+                        <div class="col-md-12 well">
+                            <a href="@Url.Action("DailyLoadWithdrawal", "Admin")" class="tm-more-button tm-more-button-welcome"><i class="fa fa-money"></i>Daily Load Withdrawal</a>
+                        </div>
+                    </div>*@
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+

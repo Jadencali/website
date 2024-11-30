@@ -1,0 +1,55 @@
+﻿@model IEnumerable<SabongPinoy.Models.LoadWithdrawal>
+
+@{
+    ViewBag.Title = "Daily Load Withdrawal";
+}
+
+<div id="home">
+    <div class="container">
+        <div id="services">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 ">
+
+                    <div class="panel panel-green">
+                        <div class="panel-heading text-left">
+                            <span><i class="ion ion-ios-people fa-fw"></i>Daily Load and Withdrawal</span>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <table class="table table-responsive table-condensed text-dark-space text-left small">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th>Days</th>
+                                        <th>Load</th>
+                                        <th>Withdrawal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @item.DateOfMonth.ToString("MM/dd/yyyy")
+                                            </td>
+                                            <td>
+                                                @item.Load
+                                            </td>
+                                            <td>
+                                                @item.Withdrawal
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

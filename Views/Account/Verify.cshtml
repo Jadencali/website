@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "Verify";
+}
+<section id="entryform">
+    <div class="container">
+        <div class="row">
+            <div class="form-wrapper">
+                <div class="container ">
+                    <div class="row text-center">
+                        <div data-anim-type="fade-in-up" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <h3>@ViewBag.Message</h3>
+                            <hr>
+                            <div class="social">
+                                @if (@ViewBag.ShowLogin)
+                                {
+                                    <a class="btn button-custom btn-custom-one" href="Login"><i class="fa fa-lock"></i>Click to Login</a>
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </section>
